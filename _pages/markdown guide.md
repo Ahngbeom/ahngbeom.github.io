@@ -14,7 +14,6 @@ bookmark: true
 
 To create a heading, add number signs (#) in front of a word or phrase. The number of number signs you use should correspond to the heading level. For example, to create a heading level three (`<h3>`), use three number signs (e.g., `### My Header`).
 
-
 |Markdown|HTML|Rendered Output|
 |---|---|---|
 |\# Header 1|<h1>Header 1</h1>|<span class="sh1">Header 1</span>|
@@ -24,7 +23,6 @@ To create a heading, add number signs (#) in front of a word or phrase. The numb
 # Emphasis
 ---
 You can add emphasis by making text bold or italic.
-
 
 ### Bold
 To bold text, add <u>two asterisks</u> (e.g., `**text**` = **text**) or underscores before and after a word or phrase. To bold the middle of a word for emphasis, add two asterisks without spaces around the letters.

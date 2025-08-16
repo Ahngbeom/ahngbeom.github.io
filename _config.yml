@@ -1,15 +1,15 @@
-title: example.com
-description: "Satellite - jekyll blog theme"
-logo_img: "/assets/img/favicon.webp"
-profile_img: "/assets/img/profile.webp"
+title: ahngbeom
+description: "My Journey as a Developer"
+logo_img: "https://avatars.githubusercontent.com/u/57256332?v=4"
+profile_img: "https://avatars.githubusercontent.com/u/57256332?v=4"
 
 # Social Links
-email: example@gmail.com
-github_username: github
-twitter_username: twitter
-instagram_username: instagram
-linkedin_username: linkedin
-facebook_username: facebook
+email: bbu0704@gmail.com
+github_username: ahngbeom
+# twitter_username: twitter
+# instagram_username: instagram
+# linkedin_username: linkedin
+# facebook_username: facebook
 
 # External API
 giscus_repo: "byanko55/jekyll-theme-satellite"
@@ -17,7 +17,7 @@ giscus_repoId: "R_kgDOJ6fqWg"
 giscus_category: "Q&A"
 giscus_categoryId: "DIC_kwDOJ6fqWs4Cc7p7"
 goatcounter_code: byanko77
-google_analytics:
+google_analytics: G-5TF76QSFJ3
 
 # If your repo name follows the format "<user-name>.github.io", then leave the below blank.
 # Otherwise, set its value as "/<repo-name>". ex) baseurl: /myblog
@@ -34,6 +34,10 @@ exclude:
   - docs/
 
 collections:
+  introduction:
+    output: true
+    permalink: /:collection/:introduction
+    order: 1
   pages:
     output: true
     permalink: /:path.html
