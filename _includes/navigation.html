@@ -3,7 +3,8 @@
     {% assign second_level_pages = "" | split, "" %}
     {% assign third_level_pages = "" | split, "" %}
 
-    {% for p in site.pages %}
+    {% assign sorted_pages = site.pages | sort: "order" %}
+    {% for p in sorted_pages %}
         {%- assign p_tree = p.url | remove_first: "/" | split: "/" -%}
         {%- assign p_name = p_tree | last -%}
         {%- assign p_level = p_tree | size -%}
