@@ -41,6 +41,11 @@ collections:
   pages:
     output: true
     permalink: /:path.html
+    sort_by: title
+    # 수동 정렬을 위한 기본값 설정
+    defaults:
+      values:
+        order: 999
 
 defaults:
   -
