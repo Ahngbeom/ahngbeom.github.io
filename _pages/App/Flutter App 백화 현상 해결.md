@@ -6,27 +6,46 @@ tags:
     - Flutter
     - Dart
     - Android
+    - GetX
+    - State Management
+    - Lifecycle
 ---
 
-## 백그라운드 / 포그라운드 상태 디버깅
+## 문제 상황
 
-`MyApp` 클래스는 `StatelessWidget` 추상 클래스를 상속받고 있다.
-`StatefulWidget`가 아닌 `StatelessWidget` 추상 클래스를 상속받고 있는지 궁금했다.
+Flutter 앱에서 백그라운드에서 포그라운드로 전환될 때 화면이 하얗게 변하는 백화 현상이 발생하는 문제가 있었습니다. 이 문제를 해결하기 위해 앱의 라이프사이클 관리 방식을 개선했습니다.
 
-> 선임에게 물어본 바로는 우리 WebView 방식의 제품을 개발하고 있고, 플러터 프레임워크는 APP 환경에서의 특정 기능을 제공하기 위해 감싼 형태로 사용자에게 서비스하고 있다.
-> 따라서 Widget이 다시 그려질 케이스가 많이 없을 것이다.
+### 현재 구조
 
-일단 백그라운드/포그라운드 전환 과정을 디버깅하기 위해서 `WidgetsBindingObserver`를 통해 lifecycle을 감지하려고 한다.
+- `MyApp` 클래스가 `StatelessWidget`을 상속
+- WebView 기반의 하이브리드 앱 구조
+- GetX를 사용한 상태 관리
 
-그러기 위해서는 `StatefulWidget` 추상 클래스를 상속받는 방식으로 임시 변경하여 디버깅해보려고 한다.
+### 기존 설계 배경
 
-### 이유
+> 현재 프로젝트는 WebView 방식의 하이브리드 앱으로, Flutter는 네이티브 기능을 제공하는 래퍼(wrapper) 역할을 합니다.
+> 따라서 Widget의 상태 변화가 빈번하지 않아 `StatelessWidget`을 사용했습니다.
 
-`WidgetsBindingObserver`는 `State` 객체에서만 사용할 수 있습니다
+## 문제 해결 접근
 
-`StatelessWidget은` 상태가 없으므로 lifecycle 메서드들을 가지지 않습니다
+### 1. 라이프사이클 모니터링 구현
 
-`initState()`, `dispose()` 등이 없어서 observer를 등록/해제할 수 없습니다
+백화 현상의 원인을 파악하기 위해 앱의 라이프사이클을 모니터링할 필요가 있었습니다. 이를 위해 `WidgetsBindingObserver`를 사용하기로 했습니다.
+
+### StatelessWidget의 한계
+
+현재 구조에서 다음과 같은 제약사항이 있었습니다:
+
+- `WidgetsBindingObserver`는 `State` 객체에서만 사용 가능
+- `StatelessWidget`은 lifecycle 메서드 (`initState()`, `dispose()` 등) 미지원
+- Observer를 등록/해제할 방법이 없음
+
+### 구조 변경 필요성
+
+라이프사이클 모니터링을 위해서는 다음 중 하나의 방식으로 구조를 변경해야 했습니다:
+
+1. `StatefulWidget`으로 전환
+2. GetX Controller를 통한 라이프사이클 관리
 
 ### 해결 방법
 
@@ -116,7 +135,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
 만약 `StatelessWidget`을 유지하고 싶다면, `GetX Controller`에서 lifecycle을 관리할 수 있습니다:
 
-```Dart
+```dart
 class AppLifecycleController extends SuperController with WidgetsBindingObserver {
   @override
   void onInit() {
@@ -179,13 +198,16 @@ class AppLifecycleController extends SuperController with WidgetsBindingObserver
 
 각 컨트롤러는 의존성이 필요한 외부 컨트롤러 인스턴스를 `late` 키워드로 선언된 변수로 관리 및 사용하고 있는 상태이다.
 
-예시로 `MyWebViewController` 컨트롤러 객체를 살펴보면 전역 변수로 컨트롤러 객체 인스턴스를 관리하는 것으로 보인다.
-다른 컨트롤러 객체도 마찬가지이다.
+## 문제의 근본 원인
+
+### 컨트롤러 관리 방식의 문제
+
+현재 컨트롤러 인스턴스는 전역 변수로 관리되고 있습니다:
 
 ```dart
-late MyWebViewController webViewCtl;
-class MyWebViewController extends GetxController {
+late MyWebViewController webViewCtl;  // 전역 변수로 관리
 
+class MyWebViewController extends GetxController {
     reload() {
       homeCtl.reload();
     }
@@ -200,7 +222,9 @@ class MyWebViewController extends GetxController {
 }
 ```
 
-`MyApp` 객체 build 시점에 각 컨트롤러에 선언된 전역 변수에 인스턴스 생성 및 저장하는 방식이다.
+### 기존 초기화 방식
+
+`MyApp` 클래스에서 빌드 시점에 컨트롤러 인스턴스를 생성하고 전역 변수에 할당:
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -213,6 +237,7 @@ class MyApp extends StatelessWidget {
       translations: Languages(),
       locale: const Locale('ko', 'KR'),
       initialBinding: BindingsBuilder(() {
+        // 전역 변수에 직접 할당
         webViewCtl = Get.put<MyWebViewController>(MyWebViewController());
         myHomeCtl = Get.put<MyHomeController>(MyHomeController());
       }),
@@ -226,26 +251,40 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-각 컨트롤러마다 전역 변수를 선언해서 인스턴스를 할당 및 사용하는 방식보다 GetX의 의존성 주입 시스템을 활용하여 `Get.find<T>()`를 사용하는 것이 더 안전하고 권장되는 방법일 것 같다.
-`LateInitializationError`도 방지하고 컨트롤러들 간의 의존성을 안전하게 관리할 수 있다는 측면에서 이점이 많은 것 같다.
+## 개선된 접근 방식
+
+GetX의 의존성 주입 시스템을 활용하여 더 안정적인 방식으로 변경할 수 있습니다:
+
+1. 전역 변수 사용을 피하고 `Get.find<T>()` 활용
+2. `LateInitializationError` 방지
+3. 컨트롤러 간 의존성 명확하게 관리
+
+## 최종 구현
+
+### 1. 개선된 컨트롤러 구조
 
 ```dart
 class MyWebViewController extends GetxController {
+  // GetX의 의존성 주입을 활용한 컨트롤러 참조
   MyHomeController get homeCtl => Get.find<MyHomeController>();
 
-    reload() {
-      homeCtl.reload();
-    }
+  reload() {
+    homeCtl.reload();
+  }
 
-    goHome() {
-      homeCtl.goHome();
-    }
+  goHome() {
+    homeCtl.goHome();
+  }
 
-    backButtonPress(){
-      homeCtl.backButtonPress();
-    }
+  backButtonPress() {
+    homeCtl.backButtonPress();
+  }
 }
+```
 
+### 2. 안전한 의존성 주입 설정
+
+```dart
 @override
 Widget build(BuildContext context) {
   return GetMaterialApp(
@@ -253,15 +292,70 @@ Widget build(BuildContext context) {
     translations: Languages(),
     locale: const Locale('ko', 'KR'),
     initialBinding: BindingsBuilder(() {
-      // permanent: 영구적으로 인스턴스를 메모리에 유지
+      // permanent 옵션으로 인스턴스 생명주기 관리
       Get.put<MyWebViewController>(MyWebViewController(), permanent: true);
       Get.put<MyHomeController>(MyHomeController(), permanent: true);
     }),
     getPages: [
-        GetPage(name: '/', page: () => const MyWebView()),
-        GetPage(name: '/home', page: () => const MyHome()),
+      GetPage(name: '/', page: () => const MyWebView()),
+      GetPage(name: '/home', page: () => const MyHome()),
     ],
     initialRoute: myInitRoute(),
   );
 }
 ```
+
+## 결과 및 권장사항
+
+### 개선 효과
+
+1. **안정성**
+   - `LateInitializationError` 발생 방지
+   - 의존성 관리 개선
+   - 백화 현상 해결
+
+2. **유지보수성**
+   - 명확한 의존성 구조
+   - 코드 가독성 향상
+   - 디버깅 용이성 증가
+
+3. **성능**
+   - 효율적인 메모리 관리
+   - 안정적인 상태 관리
+   - 라이프사이클 최적화
+
+### 권장 사항
+
+1. **의존성 관리**
+   - `Get.find<T>()` 활용
+   - 전역 변수 사용 최소화
+   - `permanent` 옵션 적절히 활용
+
+2. **상태 관리**
+   - 라이프사이클 이벤트 모니터링
+   - 컨트롤러 간 의존성 명확화
+   - 메모리 누수 방지
+
+3. **테스트 및 모니터링**
+   - 백그라운드/포그라운드 전환 테스트
+   - 메모리 사용량 모니터링
+   - 성능 지표 추적
+
+    ```dart
+    return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        translations: Languages(),
+        locale: const Locale('ko', 'KR'),
+        initialBinding: BindingsBuilder(() {
+        // permanent: 영구적으로 인스턴스를 메모리에 유지
+        Get.put<MyWebViewController>(MyWebViewController(), permanent: true);
+        Get.put<MyHomeController>(MyHomeController(), permanent: true);
+        }),
+        getPages: [
+            GetPage(name: '/', page: () => const MyWebView()),
+            GetPage(name: '/home', page: () => const MyHome()),
+        ],
+        initialRoute: myInitRoute(),
+    );
+    //...
+    ```
