@@ -31,15 +31,15 @@ date: "2025-09-16"
 
 ## OSI 7 Layer
 
-||Layer||Protocol Data Unit(PDU)|Function|
-|-|-|------|---|---|
-|Host Layer|7|Application Layer|Data|리소스 공유나 원격 파일 접근을 위한 고급 프로토콜, e.g. HTTP.|
-|Host Layer|6|Presentation Layer|Data|네트워킹 서비스와 애플리케이션 간 데이터 변환 (문자 인코딩, 데이터 압축, 암호화/복호화)|
-|Host Layer|5|Session Layer|Data|통신 세션 관리, 즉 두 노드 간의 여러 번의 왕복 전송 형태로 정보를 지속적으로 교환하는 것|
-|Host Layer|4|Transport Layer|Segment|패킷 분할, ACK 및 멀티플렉싱를 포함하여 네트워크의 지점 간 데이터 세그먼트의 안정적인 전송|
-|Media Layer|3|Network Layer|Packet, Datagram|Addressing, Routing, Traffic Control을 포함한 다중 노드 네트워크 구조화 및 관리|
-|Media Layer|2|Data Link Layer|Frame|물리적 계층으로 연결된 두 노드 간 데이터 프레임 전송|
-|Media Layer|1|Physical Layer|Bit, Symbol|물리적 매체를 통한 원시 비트 스트림의 전송 및 수신|
+||Layer||Protocol Data Unit(PDU)|e.g.|Function|
+|-|-|------|---|---|---|
+|Host Layer|7|Application Layer|Data|HTTP, SMTP, SNMP, FTP, TELNET, NFS, NTP|리소스 공유나 원격 파일 접근을 위한 고급 프로토콜|
+|Host Layer|6|Presentation Layer|Data|ASCII, MIDI, MPEG|네트워킹 서비스와 애플리케이션 간 데이터 변환 (문자 인코딩, 데이터 압축, 암호화/복호화)|
+|Host Layer|5|Session Layer|Data|FIFO, NetBIOS, SSL, TLS|통신 세션 관리, 즉 두 노드 간의 여러 번의 왕복 전송 형태로 정보를 지속적으로 교환하는 것|
+|Host Layer|4|Transport Layer|Segment|TCP, UDP, RTP, SCTP|패킷 분할, ACK 및 멀티플렉싱를 포함하여 네트워크의 지점 간 데이터 세그먼트의 안정적인 전송|
+|Media Layer|3|Network Layer|Packet, Datagram|IP, ICMP, IPsec|Addressing, Routing, Traffic Control을 포함한 다중 노드 네트워크 구조화 및 관리|
+|Media Layer|2|Data Link Layer|Frame|Ethernet|물리적 계층으로 연결된 두 노드 간 데이터 프레임 전송|
+|Media Layer|1|Physical Layer|Bit, Symbol|X.25, RS-232|물리적 매체를 통한 원시 비트 스트림의 전송 및 수신|
 
 ### 브리지 및 스위치
 
