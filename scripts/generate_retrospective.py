@@ -18,14 +18,20 @@ class JiraClient:
     """Jira REST API 클라이언트"""
 
     def __init__(self, base_url: str, email: str, api_token: str):
-        self.base_url = f"https://{base_url}"
+        # URL에 https://가 이미 포함되어 있는 경우 처리
+        if base_url.startswith("https://") or base_url.startswith("http://"):
+            self.base_url = base_url.rstrip("/")
+        else:
+            self.base_url = f"https://{base_url}"
         self.auth = (email, api_token)
         self.headers = {"Accept": "application/json"}
+        print(f"[DEBUG] Jira base URL: {self.base_url}")
 
     def search_issues(self, jql: str, fields: list = None, max_results: int = 100) -> list:
         """JQL로 이슈 검색"""
-        # API v2 사용 (v3는 일부 환경에서 410 에러 발생)
-        url = f"{self.base_url}/rest/api/2/search"
+        # 새로운 API 엔드포인트 사용 (v2 search는 제거됨)
+        # https://developer.atlassian.com/changelog/#CHANGE-2046
+        url = f"{self.base_url}/rest/api/3/search/jql"
 
         # JQL에서 줄바꿈 제거 (URL 인코딩 문제 방지)
         clean_jql = " ".join(jql.split())
@@ -36,9 +42,21 @@ class JiraClient:
             "fields": ",".join(fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated"])
         }
 
+        # 디버그 로그
+        print(f"[DEBUG] Request URL: {url}")
+        print(f"[DEBUG] JQL: {clean_jql}")
+
         response = requests.get(url, auth=self.auth, headers=self.headers, params=params)
+
+        # 디버그: 응답 상태 및 내용
+        print(f"[DEBUG] Response status: {response.status_code}")
+        if response.status_code != 200:
+            print(f"[DEBUG] Response body: {response.text[:500]}")
+
         response.raise_for_status()
-        return response.json().get("issues", [])
+        result = response.json()
+        print(f"[DEBUG] Total issues found: {result.get('total', 0)}")
+        return result.get("issues", [])
 
 
 class RetrospectiveGenerator:
@@ -49,27 +67,36 @@ class RetrospectiveGenerator:
         self.assignee = assignee
         self.output_dir = Path(output_dir)
 
-    def get_week_range(self, reference_date: datetime = None) -> tuple:
-        """지난 주 월요일~일요일 날짜 범위 계산"""
+    def get_date_range(self, reference_date: datetime = None, days: int = 7) -> tuple:
+        """현재 날짜 기준 지난 N일 날짜 범위 계산
+
+        Args:
+            reference_date: 기준 날짜 (기본값: 오늘)
+            days: 조회할 일수 (기본값: 7일)
+
+        Returns:
+            (시작일, 종료일) 튜플 - 종료일은 어제
+        """
         if reference_date is None:
             reference_date = datetime.now()
 
-        # 이번 주 월요일
-        days_since_monday = reference_date.weekday()
-        this_monday = reference_date - timedelta(days=days_since_monday)
+        # 어제를 종료일로, 그로부터 days일 전을 시작일로
+        end_date = reference_date.date() - timedelta(days=1)
+        start_date = end_date - timedelta(days=days - 1)
 
-        # 지난 주 월요일 ~ 일요일
-        last_monday = this_monday - timedelta(days=7)
-        last_sunday = this_monday - timedelta(days=1)
-
-        return last_monday.date(), last_sunday.date()
+        return start_date, end_date
 
     def fetch_issues(self, start_date, end_date) -> list:
         """기간 내 이슈 조회"""
+        # end_date + 1일을 사용하여 end_date 전체를 포함
+        # JQL에서 '<=' 사용 시 해당 날짜 00:00:00까지만 포함됨
+        from datetime import timedelta
+        next_day = end_date + timedelta(days=1)
+
         jql = f"""
             assignee = "{self.assignee}"
             AND updated >= "{start_date}"
-            AND updated <= "{end_date}"
+            AND updated < "{next_day}"
             ORDER BY updated DESC
         """.strip()
 
@@ -288,9 +315,14 @@ _다음 주 계획을 작성해주세요._
         print(f"Created: {filepath}")
         return str(filepath)
 
-    def run(self, reference_date: datetime = None) -> str:
-        """회고록 생성 실행"""
-        start_date, end_date = self.get_week_range(reference_date)
+    def run(self, reference_date: datetime = None, days: int = 7) -> str:
+        """회고록 생성 실행
+
+        Args:
+            reference_date: 기준 날짜 (기본값: 오늘)
+            days: 조회할 일수 (기본값: 7일)
+        """
+        start_date, end_date = self.get_date_range(reference_date, days)
         print(f"Generating retrospective for {start_date} ~ {end_date}")
 
         issues = self.fetch_issues(start_date, end_date)
