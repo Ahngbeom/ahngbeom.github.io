@@ -24,11 +24,16 @@ class JiraClient:
 
     def search_issues(self, jql: str, fields: list = None, max_results: int = 100) -> list:
         """JQL로 이슈 검색"""
-        url = f"{self.base_url}/rest/api/3/search"
+        # API v2 사용 (v3는 일부 환경에서 410 에러 발생)
+        url = f"{self.base_url}/rest/api/2/search"
+
+        # JQL에서 줄바꿈 제거 (URL 인코딩 문제 방지)
+        clean_jql = " ".join(jql.split())
+
         params = {
-            "jql": jql,
+            "jql": clean_jql,
             "maxResults": max_results,
-            "fields": fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated"]
+            "fields": ",".join(fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated"])
         }
 
         response = requests.get(url, auth=self.auth, headers=self.headers, params=params)
