@@ -25,7 +25,6 @@ class JiraClient:
             self.base_url = f"https://{base_url}"
         self.auth = (email, api_token)
         self.headers = {"Accept": "application/json"}
-        print(f"[DEBUG] Jira base URL: {self.base_url}")
 
     def search_issues(self, jql: str, fields: list = None, max_results: int = 100) -> list:
         """JQL로 이슈 검색"""
@@ -42,21 +41,9 @@ class JiraClient:
             "fields": ",".join(fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated"])
         }
 
-        # 디버그 로그
-        print(f"[DEBUG] Request URL: {url}")
-        print(f"[DEBUG] JQL: {clean_jql}")
-
         response = requests.get(url, auth=self.auth, headers=self.headers, params=params)
-
-        # 디버그: 응답 상태 및 내용
-        print(f"[DEBUG] Response status: {response.status_code}")
-        if response.status_code != 200:
-            print(f"[DEBUG] Response body: {response.text[:500]}")
-
         response.raise_for_status()
-        result = response.json()
-        print(f"[DEBUG] Total issues found: {result.get('total', 0)}")
-        return result.get("issues", [])
+        return response.json().get("issues", [])
 
 
 class RetrospectiveGenerator:
