@@ -38,7 +38,7 @@ class JiraClient:
         params = {
             "jql": clean_jql,
             "maxResults": max_results,
-            "fields": ",".join(fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated"])
+            "fields": ",".join(fields or ["summary", "description", "status", "issuetype", "priority", "labels", "updated", "comment"])
         }
 
         response = requests.get(url, auth=self.auth, headers=self.headers, params=params)
@@ -128,10 +128,15 @@ class RetrospectiveGenerator:
             status_key = status_map.get(status_name, "other")
             type_key = type_map.get(issue_type, "other")
 
+            # 댓글 추출
+            comments = fields.get("comment", {}).get("comments", [])
+            extracted_comments = self._extract_comments(comments)
+
             issue_data = {
                 "key": issue.get("key"),
                 "summary": fields.get("summary", ""),
                 "description": self._extract_description(fields.get("description")),
+                "comments": extracted_comments,
                 "status": status_name,
                 "type": issue_type,
                 "priority": fields.get("priority", {}).get("name", ""),
@@ -167,6 +172,56 @@ class RetrospectiveGenerator:
             return ""
 
         return extract_text(description).strip()[:500]  # 500자 제한
+
+    def _extract_comments(self, comments: list) -> list:
+        """Jira 댓글 목록에서 텍스트 추출"""
+        extracted = []
+        for comment in comments:
+            body = comment.get("body")
+            author = comment.get("author", {}).get("displayName", "Unknown")
+            created = comment.get("created", "")
+
+            # 날짜 파싱
+            if created:
+                try:
+                    created_dt = date_parser.parse(created)
+                    created_str = created_dt.strftime("%Y-%m-%d %H:%M")
+                except:
+                    created_str = created[:10] if len(created) >= 10 else created
+            else:
+                created_str = ""
+
+            # ADF 형식 텍스트 추출
+            text = self._extract_description(body)
+            if text:
+                extracted.append({
+                    "author": author,
+                    "created": created_str,
+                    "text": text[:300]  # 댓글은 300자 제한
+                })
+
+        return extracted
+
+    def _format_issues_with_details(self, issues: list) -> str:
+        """이슈 목록을 상세 내용(설명 + 댓글)과 함께 포맷팅"""
+        md = ""
+        for issue in issues:
+            md += f"#### {issue['key']}: {issue['summary']}\n\n"
+
+            # 설명
+            if issue['description']:
+                md += f"**내용**: {issue['description']}\n\n"
+
+            # 댓글
+            if issue.get('comments'):
+                md += "**진행 내역**:\n"
+                for comment in issue['comments']:
+                    md += f"- [{comment['created']}] {comment['text']}\n"
+                md += "\n"
+
+            md += "---\n\n"
+
+        return md
 
     def generate_markdown(self, start_date, end_date, categories: dict) -> str:
         """마크다운 회고록 생성"""
@@ -208,28 +263,20 @@ tags: [회고, 모비닥, 주간회고]
         completed_tasks = [i for i in tasks if i in completed or i in monitoring]
 
         if completed_bugs:
-            md += "### 버그 수정\n\n| 제목 | 설명 |\n|------|------|\n"
-            for issue in completed_bugs:
-                md += f"| {issue['summary']} | {issue['description'][:100] or '-'} |\n"
-            md += "\n"
+            md += "### 버그 수정\n\n"
+            md += self._format_issues_with_details(completed_bugs)
 
         if completed_improvements:
-            md += "### 기능 개선\n\n| 제목 | 설명 |\n|------|------|\n"
-            for issue in completed_improvements:
-                md += f"| {issue['summary']} | {issue['description'][:100] or '-'} |\n"
-            md += "\n"
+            md += "### 기능 개선\n\n"
+            md += self._format_issues_with_details(completed_improvements)
 
         if completed_features:
-            md += "### 새 기능 개발\n\n| 제목 | 설명 |\n|------|------|\n"
-            for issue in completed_features:
-                md += f"| {issue['summary']} | {issue['description'][:100] or '-'} |\n"
-            md += "\n"
+            md += "### 새 기능 개발\n\n"
+            md += self._format_issues_with_details(completed_features)
 
         if completed_tasks:
-            md += "### 작업\n\n| 제목 | 설명 |\n|------|------|\n"
-            for issue in completed_tasks:
-                md += f"| {issue['summary']} | {issue['description'][:100] or '-'} |\n"
-            md += "\n"
+            md += "### 작업\n\n"
+            md += self._format_issues_with_details(completed_tasks)
 
         if not (completed_bugs or completed_improvements or completed_features or completed_tasks):
             md += "_완료된 작업이 없습니다._\n\n"
