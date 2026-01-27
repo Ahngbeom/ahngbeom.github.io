@@ -7,3 +7,9 @@ _site/
 *.gem
 Gemfile.lock
 vendor
+
+# Logs
+*.log
+
+# WSL metadata
+*:Zone.Identifier
