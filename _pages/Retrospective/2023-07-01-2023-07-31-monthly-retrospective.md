@@ -6,7 +6,7 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ## 개요
 
-2023년 7월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **바로접수 기능 개발 및 안정화**였습니다. 6월에 완료된 진료 통합 기반 위에 새로운 바로접수 기능을 개발하고, 관련 UX를 대폭 개선했습니다. 총 50개의 이슈를 처리하고, 48개의 커밋(서버 32개 + 프론트 16개)을 작성했습니다.
+2023년 7월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **바로접수 기능 개발 및 안정화**였습니다. 6월에 완료된 진료 통합 기반 위에 새로운 바로접수 기능을 개발하고, 관련 UX를 대폭 개선했습니다. 총 50개의 이슈를 처리하고, 68개의 커밋(서버 40개 + 프론트 28개)을 작성했습니다.
 
 ---
 
@@ -99,61 +99,76 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ## GitLab 커밋 내역
 
-### Backend Server (32 commits) - 바로접수 및 푸시알림
+### Backend Server (40 commits) - 바로접수 및 푸시알림
 
 | 날짜 | 내용 |
 |------|------|
+| 07-20 | [환자, 공통] 홈 - API 개선 및 개편 |
 | 07-20 | [docs] tb_hospital 변경된 스키마 반영 (prod 기준) |
 | 07-20 | [공통] listCrmPatientReservationGroup 쿼리 수정 |
-| 07-20 | [환자, 공통] 홈 - API 개선 및 개편 |
-| 07-21 | [공통] ConsultGroupSearchCondition - typeList, statusList comment 수정 |
-| 07-21 | [공통] 방문예약, 바로접수 - QR 접수 시, 진료신청서 재작성 과정 생략 |
 | 07-21 | [공통] 의사 리스트 정렬 개선 (홈, 병원 상세, 의사 리스트 by hospital) |
+| 07-21 | Merge branch 'stag' into MPT-2806 |
 | 07-21 | [환자, 공통] MyBatis common.groupBy 추가 |
-| 07-24 | [공통] /consult-group GET API return 타입 변경 |
+| 07-21 | [공통] 방문예약, 바로접수 - QR 접수 시, 진료신청서 재작성 과정 생략 |
+| 07-21 | [공통] ConsultGroupSearchCondition - typeList, statusList comment 수정 |
 | 07-24 | [환자] /consult-group GET API 추가 |
-| 07-25 | [공통] WaitingCountService |
+| 07-24 | [공통] /consult-group GET API return 타입 변경 |
+| 07-24 | Merge branch 'stag' into MPT-3095 |
+| 07-25 | Merge branch 'stag' into MPT-3095 |
 | 07-25 | [통합, 환자, 공통] WaitingCountService |
-| 07-25 | [환자, 공통] checkAlarmByHospitalSeq - 특정 병원 알림 모두 읽음 처리 |
+| 07-25 | Merge branch 'stag' into MPT-2806 |
 | 07-25 | [환자, 공통] listFeedRecommend - orderBy 수정, groupBy sql 태그 수정 |
+| 07-25 | [환자, 공통] checkAlarmByHospitalSeq - 특정 병원 알림 모두 읽음 처리 (2개 커밋) |
 | 07-25 | [환자] /home/hospital - 병원별 읽지 않은 알림 count |
-| 07-26 | [공통] AlarmPatientContent - QR 방문접수 접수 대기 푸시알림 추가 |
-| 07-26 | [공통] ConsultGroupHistory - VO, SearchCondition 추가, findConsultGroupHistory 추가 |
+| 07-25 | Merge branch 'stag' into MPT-2806 |
+| 07-25 | [공통] WaitingCountService |
 | 07-26 | [공통] listConsultGroup - 진료내역 리스트 조회 쿼리 성능 개선 |
-| 07-26 | [배치] 바로접수 - 20분 내 QR 접수 미신청 시 관리자 취소 |
-| 07-27 | [공통] ConsultGroupVO - previousStatus 추가 |
-| 07-27 | [공통] QR 방문접수 - AlarmPatientContentDTO appLink 추가 |
-| 07-27 | [공통] waitingTurnClosePushAlarm - 접수 대기 알림 푸시 전송 조건 수정 |
-| 07-27 | [공통] waitingTurnClosePushAlarm - perPage 수정 |
-| 07-27 | [공통] waitingTurnClosePushAlarm - reservationDtm NullPointerException 수정 |
-| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - Only 푸시알림 (SMS x) |
-| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - 비회원 QR 접수 예외처리 |
-| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - 푸시알림 전송 타겟 수정 |
-| 07-27 | [공통] 비회원 QR 방문접수 - AlarmPatientContentDTO appLink 추가 |
+| 07-26 | [공통] AlarmPatientContent - QR 방문접수 접수 대기(대기 인원 수) 푸시알림 추가 |
+| 07-26 | [공통] ConsultGroupHistory - VO, SearchCondition 추가, findConsultGroupHistory 추가 |
+| 07-26 | [배치] 바로접수 - 예약 접수 완료 상태에서 20분 내에 병원에 방문하여 QR 접수 신청을 하지 않을 경우 관리자 취소 |
+| 07-26 | Merge branch 'stag' into MPT-3219 |
 | 07-27 | [배치, 공통] 바로접수 - 20분 내 QR 접수 미신청 관리자 취소 로직 수정 |
+| 07-27 | [공통] waitingTurnClosePushAlarm - QR 방문접수 접수 대기 알림 푸시 전송 조건 수정 |
+| 07-27 | [공통] waitingTurnClosePushAlarm - reservationDtm NullPointerException 수정 |
+| 07-27 | [공통] ConsultGroupVO - previousStatus 추가 |
+| 07-27 | Merge branch 'stag' into MPT-2719 |
+| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - 비회원 QR 접수 예외처리 |
+| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - Only 푸시알림 (SMS x) |
+| 07-27 | [공통] 대기 환자 수 5명 푸시알림 - 푸시알림 전송 타겟 수정 (3개 커밋) |
+| 07-27 | [공통] QR 방문접수 - AlarmPatientContentDTO appLink 추가 |
+| 07-27 | [공통] 비회원 QR 방문접수 - AlarmPatientContentDTO appLink 추가 |
+| 07-27 | [공통] waitingTurnClosePushAlarm - perPage 수정 |
 | 07-28 | [공통] 대기 환자 수 5명 푸시알림 - 푸시알림 전송 타겟 수정 |
 | 07-28 | [환자] /doctor API - 의사 정렬 로직 추가 |
 
-### Frontend (16 commits) - 바로접수 UI 및 개선
+### Frontend (28 commits) - 바로접수 UI 및 개선
 
 | 날짜 | 내용 |
 |------|------|
 | 07-24 | [공통] 바로접수 진료 신청서 - '이미 접수한 내역이 있어요' Alert 추가 |
-| 07-24 | [환자] ConsultCompleteCard - onClickConsultDetail 수정 |
-| 07-24 | [환자] ConsultProcessCard - mounted $nextTick() 추가 |
-| 07-24 | [환자] loadTodayReservationConsultGroup 수정 |
+| 07-24 | Merge remote-tracking branch 'origin/stag' into stag |
 | 07-24 | [환자] 홈 - 코드 청소 |
-| 07-25 | [환자] HospitalConsult - isLoad |
-| 07-25 | [환자] loadFeedRecommendListByDoctors |
-| 07-25 | [환자] my-page - 메인 버튼 텍스트 크기 수정 |
+| 07-24 | [환자] ConsultCompleteCard - onClickConsultDetail 수정 |
+| 07-24 | Merge branch 'stag' into MPT-3095 |
+| 07-24 | [환자] loadTodayReservationConsultGroup 수정 |
+| 07-24 | [환자] ConsultProcessCard - mounted $nextTick() 추가 |
+| 07-24 | Merge branch 'stag' into MPT-3095 |
+| 07-25 | Merge branch 'stag' into MPT-3095 (2개 커밋) |
 | 07-25 | [환자] 바로접수, QR 접수 - 대기 환자 수 출력 |
+| 07-25 | Merge branch 'stag' into MPT-2806 |
+| 07-25 | [환자] loadFeedRecommendListByDoctors |
+| 07-25 | [환자] HospitalConsult - isLoad |
 | 07-25 | [환자] 병원 알림 모두 읽음 처리, setBadgeCount |
+| 07-25 | [환자] my-page - 메인 버튼 텍스트 크기 수정 |
 | 07-26 | [환자] consultProcess.js - 진료프로세스카드, 진료상세페이지 Title, SubTitle 상수화 |
+| 07-26 | Merge branch 'stag' into MPT-3219 |
 | 07-27 | [통합] 관리자 취소 - 취소 사유 메시지 추가 |
-| 07-28 | [관리자] parseRelationCode - 기타 가족관계 추가 |
+| 07-27 | Merge branch 'stag' into MPT-3219 |
+| 07-27 | Merge branch 'stag' into MPT-2719 (4개 커밋) |
 | 07-28 | [통합] 진료카드, 진료상세 - DateUtil.after60minutes 조건 일부 제거 |
-| 07-28 | [환자] DoctorSelectModal - 의사 정렬 로직 수정 |
 | 07-28 | [환자] 방문예약 - 예약 신청 완료화면 수정 |
+| 07-28 | [관리자] parseRelationCode - 기타 가족관계 추가 |
+| 07-28 | [환자] DoctorSelectModal - 의사 정렬 로직 수정 |
 
 ---
 
@@ -244,15 +259,15 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ### 커밋
 
-- **총 커밋 수**: 48개
-- **Backend Server**: 32개
-- **Frontend**: 16개
+- **총 커밋 수**: 68개
+- **Backend Server**: 40개
+- **Frontend**: 28개
 
 | 도메인 | 커밋 수 |
 |--------|---------|
-| 바로접수 기능 | 30개 (63%) |
-| 푸시 알림 | 10개 |
-| 기타/Merge | 8개 |
+| 바로접수 기능 | 35개 (51%) |
+| 푸시 알림 | 15개 (22%) |
+| Merge/기타 | 18개 (27%) |
 
 ---
 
