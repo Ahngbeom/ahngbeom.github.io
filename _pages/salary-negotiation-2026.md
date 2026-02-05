@@ -1,828 +1,1117 @@
 ---
 title: "2026 연봉 협상 성과 발표"
+layout: default
 sitemap: false
 robots: noindex
 ---
 
 <style>
-/* ===== 기본 리셋 및 변수 ===== */
+/* ===== CSS Reset & Variables ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 :root {
-  --primary: #1a365d;
-  --primary-light: #2c5282;
-  --accent: #d69e2e;
-  --accent-light: #ecc94b;
-  --text-dark: #1a202c;
-  --text-light: #718096;
-  --bg-light: #f7fafc;
-  --bg-card: #ffffff;
-  --gradient-primary: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
-  --gradient-accent: linear-gradient(135deg, #d69e2e 0%, #ecc94b 100%);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
-  --radius: 12px;
+  --navy-900: #0f172a;
+  --navy-800: #1e293b;
+  --navy-700: #334155;
+  --navy-600: #475569;
+  --gold-500: #f59e0b;
+  --gold-400: #fbbf24;
+  --gold-300: #fcd34d;
+  --white: #ffffff;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --success: #10b981;
+  --font-display: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* 다크모드 대응 */
-.dark-theme {
-  --primary: #63b3ed;
-  --primary-light: #90cdf4;
-  --accent: #ecc94b;
-  --accent-light: #faf089;
-  --text-dark: #f7fafc;
-  --text-light: #a0aec0;
-  --bg-light: #1a202c;
-  --bg-card: #2d3748;
+/* ===== Presentation Container ===== */
+.pres-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--navy-900);
+  overflow: hidden;
+  font-family: var(--font-display);
+  z-index: 9999;
 }
 
-/* 프레젠테이션 컨테이너 */
-.presentation {
-  font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-  max-width: 100%;
-  margin: 0 auto;
-  color: var(--text-dark);
-}
-
-/* 슬라이드 공통 스타일 */
+/* ===== Slide Base ===== */
 .slide {
-  min-height: 85vh;
-  padding: 3rem 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  align-items: center;
+  padding: 4rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.slide:last-child {
-  border-bottom: none;
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 
-.slide-number {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  font-size: 0.875rem;
-  color: var(--text-light);
-  font-weight: 500;
+.slide.prev {
+  transform: translateX(-100px);
 }
 
-/* ===== 슬라이드 1: 표지 ===== */
+/* ===== Slide 1: Cover ===== */
 .slide-cover {
-  background: var(--gradient-primary);
-  color: white;
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 50%, var(--navy-700) 100%);
   text-align: center;
 }
 
-.slide-cover .title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  line-height: 1.2;
+.slide-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%);
+  pointer-events: none;
 }
 
-.slide-cover .subtitle {
-  font-size: 1.5rem;
-  font-weight: 400;
-  opacity: 0.9;
+.cover-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cover-badge {
+  display: inline-block;
+  background: var(--gold-500);
+  color: var(--navy-900);
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   margin-bottom: 2rem;
 }
 
-.slide-cover .meta {
-  font-size: 1.125rem;
-  opacity: 0.8;
+.cover-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
-.slide-cover .meta span {
-  display: block;
-  margin: 0.5rem 0;
+.cover-title span {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-300));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.slide-cover .period-badge {
-  display: inline-block;
-  background: var(--accent);
-  color: var(--primary);
-  padding: 0.5rem 1.5rem;
-  border-radius: 2rem;
-  font-weight: 700;
-  margin-top: 1.5rem;
-}
-
-/* ===== 슬라이드 2: 핵심 숫자 ===== */
-.slide-numbers {
-  background: var(--bg-light);
-}
-
-.slide-numbers h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: var(--primary);
+.cover-subtitle {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  color: var(--gray-400);
+  font-weight: 400;
   margin-bottom: 3rem;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  text-align: center;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.meta-value {
+  font-size: 1.125rem;
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* ===== Slide 2: Numbers ===== */
+.slide-numbers {
+  background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-label {
+  display: inline-block;
+  color: var(--gold-500);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
 }
 
 .numbers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .number-card {
-  background: var(--bg-card);
-  padding: 2rem;
-  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .number-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  border-color: var(--gold-500);
+  box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
 }
 
-.number-card .value {
-  font-size: 4rem;
+.number-value {
+  font-size: clamp(3rem, 6vw, 4.5rem);
   font-weight: 800;
-  background: var(--gradient-accent);
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
-}
-
-.number-card .label {
-  font-size: 1.125rem;
-  color: var(--text-light);
-  margin-top: 0.5rem;
-  font-weight: 500;
-}
-
-.number-card .detail {
-  font-size: 0.875rem;
-  color: var(--text-light);
-  margin-top: 0.25rem;
-}
-
-/* ===== 슬라이드 3: TOP 3 프로젝트 ===== */
-.slide-projects {
-  background: var(--bg-card);
-}
-
-.slide-projects h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: var(--primary);
   margin-bottom: 0.5rem;
 }
 
-.slide-projects .section-subtitle {
-  text-align: center;
-  color: var(--text-light);
-  margin-bottom: 2.5rem;
+.number-label {
+  font-size: 1.125rem;
+  color: var(--white);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
-.projects-container {
+.number-detail {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+}
+
+/* ===== Slide 3: Projects ===== */
+.slide-projects {
+  background: var(--navy-900);
+  align-items: flex-start;
+  padding-top: 3rem;
+}
+
+.projects-grid {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .project-card {
-  background: var(--bg-light);
-  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 2rem;
+  background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
   padding: 1.5rem 2rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  border-left: 4px solid var(--accent);
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  border-color: var(--gold-500);
+  background: linear-gradient(145deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.02) 100%);
 }
 
 .project-rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.rank-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--gold-500);
   line-height: 1;
-  min-width: 50px;
 }
 
-.project-content {
-  flex: 1;
+.rank-label {
+  font-size: 0.625rem;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.project-title {
-  font-size: 1.25rem;
+.project-content h3 {
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--white);
   margin-bottom: 0.5rem;
 }
 
 .project-period {
   font-size: 0.875rem;
-  color: var(--accent);
-  font-weight: 600;
+  color: var(--gold-400);
+  font-weight: 500;
   margin-bottom: 0.75rem;
 }
 
 .project-desc {
-  font-size: 0.95rem;
-  color: var(--text-dark);
+  font-size: 1rem;
+  color: var(--gray-400);
   line-height: 1.6;
+  margin-bottom: 1rem;
 }
 
 .project-tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.project-tag {
-  background: var(--primary);
-  color: white;
+.tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold-400);
   padding: 0.25rem 0.75rem;
   border-radius: 1rem;
   font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ===== Slide 4: Growth ===== */
+.slide-growth {
+  background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+}
+
+.growth-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.skills-section h3 {
+  font-size: 1.25rem;
+  color: var(--white);
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.skill-item {
+  margin-bottom: 1.5rem;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.skill-name {
+  font-size: 0.95rem;
+  color: var(--white);
   font-weight: 500;
 }
 
-/* ===== 슬라이드 4: 기술적 성장 ===== */
-.slide-growth {
-  background: var(--bg-light);
-}
-
-.slide-growth h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: var(--primary);
-  margin-bottom: 2.5rem;
-}
-
-.growth-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.growth-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.growth-label {
-  width: 140px;
+.skill-level {
+  font-size: 0.875rem;
+  color: var(--gold-400);
   font-weight: 600;
-  color: var(--text-dark);
-  font-size: 0.95rem;
 }
 
-.growth-bar-container {
-  flex: 1;
-  background: rgba(0,0,0,0.1);
-  border-radius: 1rem;
-  height: 28px;
+.skill-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
   overflow: hidden;
-  position: relative;
 }
 
-.growth-bar {
+.skill-fill {
   height: 100%;
-  background: var(--gradient-primary);
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 0.75rem;
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
+  border-radius: 4px;
   transition: width 1s ease;
 }
 
-.growth-bar span {
-  color: white;
-  font-weight: 700;
-  font-size: 0.875rem;
-}
-
-.growth-comparison {
+.comparison-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 2.5rem;
+  gap: 1.5rem;
 }
 
-.comparison-card {
-  background: var(--bg-card);
+.compare-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
   padding: 1.5rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
 }
 
-.comparison-card h4 {
-  font-size: 1rem;
-  color: var(--text-light);
+.compare-card.before {
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.compare-card.after {
+  border-color: var(--gold-500);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.compare-title {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   margin-bottom: 1rem;
   text-align: center;
 }
 
-.comparison-card ul {
+.compare-card.after .compare-title {
+  color: var(--gold-400);
+}
+
+.compare-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
-.comparison-card li {
-  padding: 0.5rem 0;
+.compare-list li {
   font-size: 0.9rem;
-  color: var(--text-dark);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  color: var(--gray-200);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.comparison-card li:last-child {
+.compare-list li:last-child {
   border-bottom: none;
 }
 
-.comparison-card li::before {
-  content: "•";
-  color: var(--accent);
-  font-weight: bold;
-  margin-right: 0.5rem;
+.compare-list li::before {
+  content: '→';
+  color: var(--gray-400);
+  font-size: 0.75rem;
 }
 
-/* ===== 슬라이드 5: 2026년 비전 ===== */
+.compare-card.after .compare-list li::before {
+  content: '★';
+  color: var(--gold-500);
+}
+
+/* ===== Slide 5: Vision ===== */
 .slide-vision {
-  background: var(--bg-card);
-}
-
-.slide-vision h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: var(--primary);
-  margin-bottom: 2.5rem;
+  background: var(--navy-900);
 }
 
 .vision-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .vision-card {
-  background: var(--bg-light);
-  padding: 1.5rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
   text-align: center;
+  transition: all 0.3s ease;
+}
+
+.vision-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold-500);
 }
 
 .vision-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin: 0 auto 1.5rem;
 }
 
 .vision-card h4 {
-  font-size: 1.125rem;
-  color: var(--primary);
+  font-size: 1.25rem;
+  color: var(--white);
+  font-weight: 700;
   margin-bottom: 0.75rem;
 }
 
 .vision-card p {
-  font-size: 0.9rem;
-  color: var(--text-dark);
+  font-size: 0.95rem;
+  color: var(--gray-400);
   line-height: 1.6;
 }
 
-/* ===== 슬라이드 6: 감사 ===== */
+/* ===== Slide 6: Thanks ===== */
 .slide-thanks {
-  background: var(--gradient-primary);
-  color: white;
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
   text-align: center;
 }
 
-.slide-thanks h2 {
-  font-size: 3rem;
+.slide-thanks::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.thanks-content {
+  position: relative;
+  z-index: 1;
+}
+
+.thanks-title {
+  font-size: clamp(3rem, 8vw, 5rem);
   font-weight: 800;
-  margin-bottom: 1.5rem;
+  color: var(--white);
+  margin-bottom: 2rem;
 }
 
-.slide-thanks .message {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto 2rem;
+.thanks-message {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  color: var(--gray-200);
   line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto 3rem;
 }
 
-.slide-thanks .quote {
+.thanks-quote {
   font-size: 1.125rem;
+  color: var(--gold-400);
   font-style: italic;
-  opacity: 0.8;
-  margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-/* ===== 네비게이션 ===== */
+/* ===== Navigation ===== */
 .pres-nav {
   position: fixed;
   bottom: 2rem;
-  right: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 0.5rem;
-  z-index: 100;
+  align-items: center;
+  gap: 1rem;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1.5rem;
+  border-radius: 3rem;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-.pres-nav button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  width: 48px;
-  height: 48px;
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.2);
   border-radius: 50%;
+  color: var(--white);
   font-size: 1.25rem;
   cursor: pointer;
-  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--gold-500);
+  border-color: var(--gold-500);
+  color: var(--navy-900);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slide-indicator {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.pres-nav button:hover {
-  background: var(--accent);
-  transform: scale(1.1);
+.dot.active {
+  background: var(--gold-500);
+  width: 24px;
+  border-radius: 4px;
 }
 
-.pres-nav button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  transform: none;
+.dot:hover:not(.active) {
+  background: rgba(255,255,255,0.5);
 }
 
-/* ===== 진행 표시 ===== */
+.slide-counter {
+  color: var(--gray-400);
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* ===== Fullscreen Button ===== */
+.fullscreen-btn {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 44px;
+  height: 44px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.75rem;
+  color: var(--white);
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-btn:hover {
+  background: var(--gold-500);
+  color: var(--navy-900);
+}
+
+/* ===== Progress Bar ===== */
 .progress-bar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
-  background: rgba(0,0,0,0.1);
-  z-index: 100;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  z-index: 10000;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
+  transition: width 0.4s ease;
 }
 
-/* ===== 반응형 ===== */
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .slide { padding: 2rem; }
+  .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+  .growth-content { grid-template-columns: 1fr; gap: 2rem; }
+  .vision-grid { grid-template-columns: 1fr; }
+  .project-card { grid-template-columns: 60px 1fr; gap: 1rem; }
+}
+
 @media (max-width: 768px) {
-  .slide {
-    padding: 2rem 1rem;
-    min-height: auto;
-  }
-
-  .slide-cover .title {
-    font-size: 2rem;
-  }
-
-  .number-card .value {
-    font-size: 2.5rem;
-  }
-
-  .project-card {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .growth-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .growth-label {
-    width: 100%;
-  }
-
-  .growth-comparison {
-    grid-template-columns: 1fr;
-  }
-
-  .pres-nav {
-    bottom: 1rem;
-    right: 1rem;
-  }
-
-  .pres-nav button {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
+  .numbers-grid { grid-template-columns: 1fr; }
+  .comparison-section { grid-template-columns: 1fr; }
+  .cover-meta { flex-direction: column; gap: 1rem; }
+  .pres-nav { padding: 0.5rem 1rem; }
 }
 
-/* ===== 프린트 스타일 ===== */
+/* ===== Print ===== */
 @media print {
+  .pres-container { position: static; height: auto; }
   .slide {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
     page-break-after: always;
     min-height: 100vh;
   }
-
-  .pres-nav,
-  .progress-bar {
-    display: none;
-  }
-
-  .slide-cover,
-  .slide-thanks {
-    color: var(--primary) !important;
-    background: white !important;
-  }
+  .pres-nav, .fullscreen-btn, .progress-bar { display: none; }
 }
 </style>
 
-<div class="presentation">
-  <!-- 진행 표시바 -->
+<div class="pres-container" id="presentation">
+  <!-- Progress Bar -->
   <div class="progress-bar">
-    <div class="progress-fill" id="progressFill" style="width: 16.66%;"></div>
+    <div class="progress-fill" id="progressFill"></div>
   </div>
 
-  <!-- 슬라이드 1: 표지 -->
-  <section class="slide slide-cover" id="slide1">
-    <div class="slide-number">1 / 6</div>
-    <h1 class="title">3년간의 성장</h1>
-    <p class="subtitle">주니어에서 미드레벨 개발자로</p>
-    <div class="meta">
-      <span><strong>발표자:</strong> 안병욱 (Back-End 개발자)</span>
-      <span><strong>소속:</strong> 모비닥</span>
+  <!-- Fullscreen Button -->
+  <button class="fullscreen-btn" id="fullscreenBtn" title="전체화면 (F)">⛶</button>
+
+  <!-- Slide 1: Cover -->
+  <section class="slide slide-cover active" data-slide="1">
+    <div class="cover-content">
+      <div class="cover-badge">Performance Review 2026</div>
+      <h1 class="cover-title">3년간의 <span>성장</span></h1>
+      <p class="cover-subtitle">주니어에서 미드레벨 개발자로의 여정</p>
+      <div class="cover-meta">
+        <div class="meta-item">
+          <div class="meta-label">발표자</div>
+          <div class="meta-value">bahn</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">포지션</div>
+          <div class="meta-value">Back-End Developer</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">소속</div>
+          <div class="meta-value">모비닥</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">기간</div>
+          <div class="meta-value">2023.02 - 2026.01</div>
+        </div>
+      </div>
     </div>
-    <div class="period-badge">2023년 2월 ~ 2026년 1월 (3년)</div>
   </section>
 
-  <!-- 슬라이드 2: 핵심 숫자 -->
-  <section class="slide slide-numbers" id="slide2">
-    <div class="slide-number">2 / 6</div>
-    <h2>핵심 성과 지표</h2>
+  <!-- Slide 2: Numbers -->
+  <section class="slide slide-numbers" data-slide="2">
+    <div class="section-header">
+      <div class="section-label">Key Metrics</div>
+      <h2 class="section-title">핵심 성과 지표</h2>
+    </div>
     <div class="numbers-grid">
       <div class="number-card">
-        <div class="value">730+</div>
-        <div class="label">Jira 이슈 처리</div>
-        <div class="detail">연평균 240개+</div>
+        <div class="number-value" data-count="730">0</div>
+        <div class="number-label">Jira 이슈</div>
+        <div class="number-detail">월평균 20개+ 처리</div>
       </div>
       <div class="number-card">
-        <div class="value">760+</div>
-        <div class="label">Git 커밋</div>
-        <div class="detail">연평균 250개+</div>
+        <div class="number-value" data-count="760">0</div>
+        <div class="number-label">Git 커밋</div>
+        <div class="number-detail">일평균 1+ 유지</div>
       </div>
       <div class="number-card">
-        <div class="value">95%+</div>
-        <div class="label">이슈 완료율</div>
-        <div class="detail">높은 신뢰도</div>
+        <div class="number-value" data-count="95" data-suffix="%">0</div>
+        <div class="number-label">완료율</div>
+        <div class="number-detail">On-Time Delivery</div>
       </div>
       <div class="number-card">
-        <div class="value">70:30</div>
-        <div class="label">BE:FE 비율</div>
-        <div class="detail">풀스택 역량</div>
+        <div class="number-value" data-text="75:25">—</div>
+        <div class="number-label">BE : FE</div>
+        <div class="number-detail">Backend Architect</div>
       </div>
     </div>
   </section>
 
-  <!-- 슬라이드 3: TOP 3 프로젝트 -->
-  <section class="slide slide-projects" id="slide3">
-    <div class="slide-number">3 / 6</div>
-    <h2>TOP 3 핵심 프로젝트</h2>
-    <p class="section-subtitle">비즈니스 핵심 영향을 미친 S급 성과</p>
-    <div class="projects-container">
+  <!-- Slide 3: Projects -->
+  <section class="slide slide-projects" data-slide="3">
+    <div class="section-header">
+      <div class="section-label">S-Tier Projects</div>
+      <h2 class="section-title">TOP 3 핵심 프로젝트</h2>
+    </div>
+    <div class="projects-grid">
       <div class="project-card">
-        <div class="project-rank">01</div>
+        <div class="project-rank">
+          <div class="rank-number">01</div>
+          <div class="rank-label">Project</div>
+        </div>
         <div class="project-content">
-          <h3 class="project-title">결제 시스템 전면 전환</h3>
-          <div class="project-period">2023년 9~11월</div>
-          <p class="project-desc">
-            Payple에서 결제선생으로 PG사 전환을 단독 수행. 청구서 결제 방식 추가로 결제 유연성을 확보하고, 정산 시스템을 분리 구현하여 운영 효율성 대폭 향상.
-          </p>
+          <h3>결제 시스템 현대화</h3>
+          <div class="project-period">2023년 9월 - 2024년 11월</div>
+          <p class="project-desc">Payple → 결제선생 PG사 전환 단독 수행 후, 결제 서비스 MSA 분리까지 주도. 회사 최초 MSA 전환 성공, 장애 격리 및 독립 배포 체계 확립.</p>
           <div class="project-tags">
-            <span class="project-tag">PG 연동</span>
-            <span class="project-tag">결제 API</span>
-            <span class="project-tag">정산 시스템</span>
+            <span class="tag">PG 연동</span>
+            <span class="tag">MSA</span>
+            <span class="tag">Spring Cloud</span>
+            <span class="tag">장애 격리</span>
           </div>
         </div>
       </div>
       <div class="project-card">
-        <div class="project-rank">02</div>
+        <div class="project-rank">
+          <div class="rank-number">02</div>
+          <div class="rank-label">Project</div>
+        </div>
         <div class="project-content">
-          <h3 class="project-title">진료 통합 시스템</h3>
-          <div class="project-period">2023년 6월</div>
-          <p class="project-desc">
-            방문예약과 원격진료를 단일 진료 시스템으로 통합하는 대규모 리팩토링 수행. 코드 중복을 제거하고 유지보수성을 대폭 향상시켜 신규 기능 개발 속도 2배 개선.
-          </p>
+          <h3>가예약 시스템 구축 및 안정화</h3>
+          <div class="project-period">2024년 11월 - 2025년 1월</div>
+          <p class="project-desc">병원 가예약 시스템 신규 구축. 설계부터 안정화까지 3개월, 100% 단독 책임 완수. 구축 → 버그 수정 → 최종 완료까지 End-to-End 프로젝트 리드.</p>
           <div class="project-tags">
-            <span class="project-tag">시스템 통합</span>
-            <span class="project-tag">리팩토링</span>
-            <span class="project-tag">아키텍처</span>
+            <span class="tag">0→1 구축</span>
+            <span class="tag">DB 설계</span>
+            <span class="tag">API 개발</span>
+            <span class="tag">Batch</span>
           </div>
         </div>
       </div>
       <div class="project-card">
-        <div class="project-rank">03</div>
+        <div class="project-rank">
+          <div class="rank-number">03</div>
+          <div class="rank-label">Project</div>
+        </div>
         <div class="project-content">
-          <h3 class="project-title">결제 서비스 MSA 분리</h3>
-          <div class="project-period">2024년 11월</div>
-          <p class="project-desc">
-            모놀리식 아키텍처에서 결제 도메인을 마이크로서비스로 최초 분리. 시스템 확장성과 장애 격리를 확보하고, 향후 서비스 분리의 기반 마련.
-          </p>
+          <h3>병원 홈페이지 구독 서비스 (SaaS)</h3>
+          <div class="project-period">2025년 12월</div>
+          <p class="project-desc">신규 Recurring Revenue 모델 구축. 구독 신청/관리/해지/결제 전체 프로세스 개발. 71개 커밋, 506개 파일, +33,000줄 순증.</p>
           <div class="project-tags">
-            <span class="project-tag">MSA</span>
-            <span class="project-tag">Spring Cloud</span>
-            <span class="project-tag">도메인 분리</span>
+            <span class="tag">SaaS</span>
+            <span class="tag">DDD</span>
+            <span class="tag">이벤트 기반</span>
+            <span class="tag">Revenue Model</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 슬라이드 4: 기술적 성장 -->
-  <section class="slide slide-growth" id="slide4">
-    <div class="slide-number">4 / 6</div>
-    <h2>기술 역량 성장</h2>
-    <div class="growth-container">
-      <div class="growth-item">
-        <div class="growth-label">기술적 리더십</div>
-        <div class="growth-bar-container">
-          <div class="growth-bar" style="width: 100%;"><span>★★★★★</span></div>
+  <!-- Slide 4: Growth -->
+  <section class="slide slide-growth" data-slide="4">
+    <div class="section-header">
+      <div class="section-label">Technical Growth</div>
+      <h2 class="section-title">기술 역량 성장</h2>
+    </div>
+    <div class="growth-content">
+      <div class="skills-section">
+        <h3>역량 평가</h3>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">아키텍처 설계</span>
+            <span class="skill-level">★★★★★</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" data-width="100"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">장애 대응</span>
+            <span class="skill-level">★★★★★</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" data-width="100"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">도메인 모델링</span>
+            <span class="skill-level">★★★★★</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" data-width="100"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">코드 품질 & 문서화</span>
+            <span class="skill-level">★★★★☆</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">End-to-End 개발</span>
+            <span class="skill-level">★★★★☆</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
         </div>
       </div>
-      <div class="growth-item">
-        <div class="growth-label">문제 해결 능력</div>
-        <div class="growth-bar-container">
-          <div class="growth-bar" style="width: 100%;"><span>★★★★★</span></div>
-        </div>
-      </div>
-      <div class="growth-item">
-        <div class="growth-label">시스템 설계</div>
-        <div class="growth-bar-container">
-          <div class="growth-bar" style="width: 100%;"><span>★★★★★</span></div>
-        </div>
-      </div>
-      <div class="growth-item">
-        <div class="growth-label">코드 품질</div>
-        <div class="growth-bar-container">
-          <div class="growth-bar" style="width: 80%;"><span>★★★★☆</span></div>
-        </div>
-      </div>
-      <div class="growth-item">
-        <div class="growth-label">풀스택 역량</div>
-        <div class="growth-bar-container">
-          <div class="growth-bar" style="width: 80%;"><span>★★★★☆</span></div>
-        </div>
-      </div>
-
-      <div class="growth-comparison">
-        <div class="comparison-card">
-          <h4>입사 초기 (2023)</h4>
-          <ul>
-            <li>기존 코드 분석 및 수정</li>
-            <li>단일 기능 개발</li>
-            <li>가이드에 따른 구현</li>
-            <li>버그 수정 중심</li>
+      <div class="comparison-section">
+        <div class="compare-card before">
+          <div class="compare-title">입사 초기 (2023)</div>
+          <ul class="compare-list">
+            <li>기존 코드 유지보수</li>
+            <li>할당된 태스크 구현</li>
+            <li>명세 기반 개발</li>
+            <li>Reactive 대응</li>
           </ul>
         </div>
-        <div class="comparison-card">
-          <h4>현재 (2026)</h4>
-          <ul>
-            <li>시스템 아키텍처 설계</li>
-            <li>MSA 전환 주도</li>
-            <li>복잡한 도메인 설계</li>
-            <li>기술적 의사결정 참여</li>
+        <div class="compare-card after">
+          <div class="compare-title">현재 (2026)</div>
+          <ul class="compare-list">
+            <li>MSA/DDD 아키텍처 설계</li>
+            <li>신규 서비스 0→1 구축</li>
+            <li>결제/구독 도메인 전문화</li>
+            <li>기술 스택 선정 주도</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 슬라이드 5: 2026년 비전 -->
-  <section class="slide slide-vision" id="slide5">
-    <div class="slide-number">5 / 6</div>
-    <h2>2026년 기여 계획</h2>
+  <!-- Slide 5: Vision -->
+  <section class="slide slide-vision" data-slide="5">
+    <div class="section-header">
+      <div class="section-label">2026 Roadmap</div>
+      <h2 class="section-title">향후 기여 계획</h2>
+    </div>
     <div class="vision-grid">
       <div class="vision-card">
         <div class="vision-icon">💳</div>
-        <h4>구독 서비스 고도화</h4>
-        <p>CRM 포인트 및 월별 구독 결제 시스템을 지속적으로 개선하여 새로운 수익 모델 안정화</p>
+        <h4>결제 플랫폼 확장</h4>
+        <p>CRM 포인트 충전 서비스 확대, 결제 옵션 다각화로 수익 채널 강화</p>
       </div>
       <div class="vision-card">
         <div class="vision-icon">🏗️</div>
-        <h4>MSA 확장</h4>
-        <p>결제 서비스 분리 경험을 바탕으로 추가 도메인 마이크로서비스 전환 주도</p>
+        <h4>MSA 2nd Wave</h4>
+        <p>예약/진료 도메인 분리, 마이크로서비스 생태계 확장 주도</p>
       </div>
       <div class="vision-card">
         <div class="vision-icon">📊</div>
-        <h4>시스템 안정화</h4>
-        <p>통계 시스템 개선 및 데이터 파이프라인 최적화로 운영 효율성 극대화</p>
+        <h4>데이터 기반 운영</h4>
+        <p>APM 고도화, 실시간 모니터링으로 선제적 장애 대응 체계 구축</p>
       </div>
     </div>
   </section>
 
-  <!-- 슬라이드 6: 감사 -->
-  <section class="slide slide-thanks" id="slide6">
-    <div class="slide-number">6 / 6</div>
-    <h2>감사합니다</h2>
-    <p class="message">
-      3년간 핵심 시스템 구축과 아키텍처 혁신을 주도하며,<br>
-      주니어 개발자에서 시스템 설계가 가능한<br>
-      미드레벨 개발자로 성장했습니다.
-    </p>
-    <p class="quote">
-      "앞으로도 모비닥의 기술적 성장에<br>
-      핵심적인 역할을 수행하겠습니다."
-    </p>
+  <!-- Slide 6: Thanks -->
+  <section class="slide slide-thanks" data-slide="6">
+    <div class="thanks-content">
+      <h2 class="thanks-title">감사합니다</h2>
+      <p class="thanks-message">
+        3년간 결제 시스템 현대화, MSA 전환, SaaS 모델 구축 등<br>
+        핵심 프로젝트를 주도하며 비즈니스 성장에 기여했습니다.<br>
+        앞으로도 기술 전문성을 바탕으로 회사의 핵심 인프라를 책임지겠습니다.
+      </p>
+      <p class="thanks-quote">
+        "기술로 비즈니스 가치를 만드는 개발자"
+      </p>
+    </div>
   </section>
 
-  <!-- 네비게이션 버튼 -->
-  <div class="pres-nav">
-    <button id="prevBtn" onclick="prevSlide()" title="이전 (←)">←</button>
-    <button id="nextBtn" onclick="nextSlide()" title="다음 (→)">→</button>
-  </div>
+  <!-- Navigation -->
+  <nav class="pres-nav">
+    <button class="nav-btn" id="prevBtn" title="이전 (←)">‹</button>
+    <div class="slide-indicator" id="slideIndicator"></div>
+    <span class="slide-counter" id="slideCounter">1 / 6</span>
+    <button class="nav-btn" id="nextBtn" title="다음 (→)">›</button>
+  </nav>
 </div>
 
 <script>
 (function() {
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
   let currentSlide = 1;
-  const totalSlides = 6;
+  let isAnimating = false;
 
-  function updateSlide() {
-    // 모든 슬라이드 표시 (스크롤 방식)
-    const targetSlide = document.getElementById('slide' + currentSlide);
-    if (targetSlide) {
-      targetSlide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Initialize
+  function init() {
+    createDots();
+    updateSlide();
+    setupEventListeners();
+    hideDefaultLayout();
+  }
+
+  // Hide Jekyll default layout elements
+  function hideDefaultLayout() {
+    const sidebar = document.querySelector('.sidebar');
+    const post = document.getElementById('post');
+    const stars = document.getElementById('stars');
+    if (sidebar) sidebar.style.display = 'none';
+    if (post) post.style.display = 'none';
+    if (stars) stars.style.display = 'none';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Create navigation dots
+  function createDots() {
+    const indicator = document.getElementById('slideIndicator');
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 1 ? ' active' : '');
+      dot.dataset.slide = i;
+      dot.addEventListener('click', () => goToSlide(i));
+      indicator.appendChild(dot);
     }
+  }
 
-    // 진행바 업데이트
+  // Update slide display
+  function updateSlide() {
+    slides.forEach((slide, index) => {
+      const slideNum = index + 1;
+      slide.classList.remove('active', 'prev');
+      if (slideNum === currentSlide) {
+        slide.classList.add('active');
+        animateSlideContent(slide);
+      } else if (slideNum < currentSlide) {
+        slide.classList.add('prev');
+      }
+    });
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((dot, index) => {
+      dot.classList.toggle('active', index + 1 === currentSlide);
+    });
+
+    // Update counter
+    document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+
+    // Update progress bar
     const progress = (currentSlide / totalSlides) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
 
-    // 버튼 상태 업데이트
+    // Update buttons
     document.getElementById('prevBtn').disabled = currentSlide === 1;
     document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
   }
 
-  window.nextSlide = function() {
-    if (currentSlide < totalSlides) {
-      currentSlide++;
-      updateSlide();
-    }
-  };
+  // Animate slide content
+  function animateSlideContent(slide) {
+    // Animate number counters
+    slide.querySelectorAll('.number-value[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.suffix || '+';
+      animateCounter(el, target, suffix);
+    });
 
-  window.prevSlide = function() {
-    if (currentSlide > 1) {
-      currentSlide--;
-      updateSlide();
-    }
-  };
+    // Animate text values
+    slide.querySelectorAll('.number-value[data-text]').forEach(el => {
+      el.textContent = el.dataset.text;
+    });
 
-  // 키보드 네비게이션
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-      e.preventDefault();
-      window.nextSlide();
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-      e.preventDefault();
-      window.prevSlide();
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      currentSlide = 1;
-      updateSlide();
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      currentSlide = totalSlides;
-      updateSlide();
-    }
-  });
+    // Animate skill bars
+    slide.querySelectorAll('.skill-fill').forEach(el => {
+      const width = el.dataset.width;
+      setTimeout(() => {
+        el.style.width = width + '%';
+      }, 300);
+    });
+  }
 
-  // 스크롤 감지하여 현재 슬라이드 업데이트
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-        const slideNum = parseInt(entry.target.id.replace('slide', ''));
-        if (slideNum !== currentSlide) {
-          currentSlide = slideNum;
-          const progress = (currentSlide / totalSlides) * 100;
-          document.getElementById('progressFill').style.width = progress + '%';
-          document.getElementById('prevBtn').disabled = currentSlide === 1;
-          document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
-        }
+  // Counter animation
+  function animateCounter(element, target, suffix) {
+    const duration = 1500;
+    const start = 0;
+    const startTime = performance.now();
+
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (target - start) * easeOut);
+      element.textContent = current + (progress === 1 ? suffix : '');
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Navigation
+  function goToSlide(num) {
+    if (isAnimating || num === currentSlide || num < 1 || num > totalSlides) return;
+    isAnimating = true;
+    currentSlide = num;
+    updateSlide();
+    setTimeout(() => isAnimating = false, 600);
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) goToSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) goToSlide(currentSlide - 1);
+  }
+
+  // Fullscreen
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.getElementById('presentation').requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  // Event listeners
+  function setupEventListeners() {
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
+    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+
+    document.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case 'ArrowRight':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          nextSlide();
+          break;
+        case 'ArrowLeft':
+        case 'PageUp':
+          e.preventDefault();
+          prevSlide();
+          break;
+        case 'Home':
+          e.preventDefault();
+          goToSlide(1);
+          break;
+        case 'End':
+          e.preventDefault();
+          goToSlide(totalSlides);
+          break;
+        case 'f':
+        case 'F':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case 'Escape':
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          }
+          break;
       }
     });
-  }, { threshold: 0.5 });
 
-  // 모든 슬라이드 관찰
-  document.querySelectorAll('.slide').forEach(slide => {
-    observer.observe(slide);
-  });
+    // Number key navigation (1-6)
+    document.addEventListener('keydown', (e) => {
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= totalSlides) {
+        goToSlide(num);
+      }
+    });
+  }
 
-  // 초기화
-  updateSlide();
+  // Start
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
