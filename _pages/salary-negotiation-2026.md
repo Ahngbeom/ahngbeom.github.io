@@ -1,6 +1,5 @@
 ---
 title: "2026 연봉 협상 성과 발표"
-layout: default
 sitemap: false
 robots: noindex
 ---
