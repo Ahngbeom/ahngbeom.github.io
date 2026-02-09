@@ -13,3 +13,8 @@ vendor
 
 # WSL metadata
 *:Zone.Identifier
+
+# Astro
+node_modules/
+dist/
+.astro/
