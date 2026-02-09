@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Pagination from '../../../../components/Pagination.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import { filterPostsByCategory, getCategoryPathKeys, getPublishedPosts, paginatePosts } from '../../../../lib/content';
+import { siteConfig } from '../../../../config/site';
+
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+  const perPage = siteConfig.layout.postsPerPage;
+  const byCategory = getCategoryPathKeys(allPosts);
+
+  const paths = [];
+
+  for (const [key, postCount] of byCategory.entries()) {
+    const segments = key.split('/');
+    const totalPages = Math.max(1, Math.ceil(postCount / perPage));
+
+    for (let page = 2; page <= totalPages; page += 1) {
+      paths.push({
+        params: {
+          slug: key,
+          page: String(page)
+        },
+        props: {
+          segments,
+          page
+        }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { segments, page } = Astro.props;
+const allPosts = await getPublishedPosts();
+const filtered = filterPostsByCategory(allPosts, segments);
+const pagination = paginatePosts(filtered, page, siteConfig.layout.postsPerPage);
+const title = segments.join(' > ');
+---
+
+<BaseLayout title={`${title} - Page ${pagination.currentPage} | ahngbeom`} subtitle={`Category: ${title}`}>
+  <section class="category-page">
+    <h2 class="section-title">{title}</h2>
+    <p class="meta">Page {pagination.currentPage} of {pagination.totalPages}</p>
+    <div class="post-list">
+      {pagination.items.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </div>
+    <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} basePath={`/category/${segments.map(encodeURIComponent).join('/')}/`} />
+  </section>
+</BaseLayout>
+
+<style>
+  .category-page {
+    margin-top: 1.2rem;
+  }
+
+  .post-list {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+</style>
