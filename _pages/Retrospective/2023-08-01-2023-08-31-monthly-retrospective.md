@@ -6,7 +6,7 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ## 개요
 
-2023년 8월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **진료신청서 개선** 및 **병원 시간표 개선**이었습니다. WEB/APP 진료신청서에 C.C(Chief Complaint, 주 호소 증상) 기능을 추가하고, 병원 시간표를 의사 스케줄 기반으로 재설계했습니다. 총 38개의 이슈를 처리하고, 57개의 커밋(서버 56개 + 프론트 0개 + 플러터 1개)을 작성했습니다.
+2023년 8월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **진료신청서 개선** 및 **병원 시간표 개선**이었습니다. WEB/APP 진료신청서에 C.C(Chief Complaint, 주 호소 증상) 기능을 추가하고, 병원 시간표를 의사 스케줄 기반으로 재설계했습니다. 총 38개의 이슈를 처리하고, 57개의 커밋(서버 56개 + 프론트 0개 + 플러터 1개 + DB 스키마 8개)을 작성했습니다.
 
 ---
 
@@ -175,6 +175,19 @@ tags: [회고, 플라잉닥터, 월간회고]
 | 08-31 | [환자] HospitalClinic - loadTodayFeedList alarmList.filter 조건 수정 |
 | 08-31 | [환자] 알림 리스트 - 피드 답글 알림 클릭 시 리다이렉트 문제 수정 |
 
+### DB Schema - mobidoc-database (8 commits)
+
+| 날짜 | 내용 |
+|------|------|
+| 08-01 | MOBIDOC DB EXPORT & IMPORT SCRIPT |
+| 08-01 | docs 디렉토리 정리 |
+| 08-01 | tb_alarm_patient_template 초기 데이터 삽입 쿼리 |
+| 08-02 | VIEW - CREATE OR REPLACE |
+| 08-03 | tb_alarm_patient_template 초기 데이터 삽입 쿼리 |
+| 08-09 | [RELEASE:20230808] 스키마 업데이트 |
+| 08-16 | [RELEASE:20230816] UPDATE DDL |
+| 08-17 | 디렉토리 정리 |
+
 ### Flutter (1 commit) - 결제선생 연동
 
 | 날짜 | 내용 |
@@ -279,10 +292,11 @@ consult_group_history 테이블에 consult_group 테이블의 **모든 컬럼을
 
 ### 커밋
 
-- **총 커밋 수**: 102개
+- **총 커밋 수**: 110개
 - **Backend Server**: 56개
 - **Frontend**: 45개
 - **Flutter**: 1개
+- **DB Schema (mobidoc-database)**: 8개
 
 | 도메인 | 커밋 수 |
 |--------|---------|
