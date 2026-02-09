@@ -13,7 +13,9 @@ date: "2024-05-31"
 - 완료 이슈: 37개
 - 백엔드 커밋: 18개
 - 프론트엔드 커밋: 40개
-- **총 커밋: 58개**
+- mobidoc-helm(인프라) 커밋: 3개
+- DB Schema(mobidoc-database) 커밋: 1개
+- **총 커밋: 62개**
 
 ---
 
@@ -149,6 +151,20 @@ date: "2024-05-31"
 - 통합 시스템 화면 개선 (12개 커밋)
 - 결제 및 처방전 화면 개선 (5개 커밋)
 - 공지사항 이미지 뷰어 개선 (3개 커밋)
+
+### DB Schema - mobidoc-database (1 커밋)
+
+| 날짜 | 내용 |
+|------|------|
+| 05-09 | [20240509] MOBIDOC DATABASE SCHEMA UPDATE |
+
+### mobidoc-helm(인프라) (3개 커밋)
+
+왕진(House Call) 서비스 Helm Chart 초기 구성 작업을 수행했습니다.
+
+- Doctor House Call Helm Charts 초기 구성 (11파일, +445라인)
+- api-house-call 설정 파일 .properties → yaml 전환
+- housecall spring.datasource.mobidoc DB 데이터소스 설정
 
 ---
 
@@ -314,7 +330,9 @@ ElasticAPM 데이터를 활용한 모니터링 대시보드를 구축합니다.
 |------|------|
 | 백엔드 커밋 | 18개 |
 | 프론트엔드 커밋 | 40개 |
-| **총 커밋** | **58개** |
+| mobidoc-helm(인프라) 커밋 | 3개 |
+| DB Schema(mobidoc-database) 커밋 | 1개 |
+| **총 커밋** | **62개** |
 
 ---
 

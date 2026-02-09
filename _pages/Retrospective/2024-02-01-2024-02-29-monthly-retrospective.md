@@ -6,12 +6,13 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ## 개요
 
-2024년 2월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **진료 중복 접수 방어** 및 **태블릿 접수 개선**이었습니다. 진료 예약과 바로접수 시 중복 접수를 방지하는 로직을 강화하고, 태블릿 접수 시스템의 사용성을 지속적으로 개선했습니다. 또한 EMR 연동을 위한 테이블을 구축하고, 병원 시간표 오류를 수정했습니다. 총 33개의 이슈를 처리하고, 19개의 커밋(백엔드 7개 + 프론트엔드 12개)을 작성했습니다.
+2024년 2월 한 달간의 회고록입니다. 이 달의 핵심 프로젝트는 **진료 중복 접수 방어** 및 **태블릿 접수 개선**이었습니다. 진료 예약과 바로접수 시 중복 접수를 방지하는 로직을 강화하고, 태블릿 접수 시스템의 사용성을 지속적으로 개선했습니다. 또한 EMR 연동을 위한 테이블을 구축하고, 병원 시간표 오류를 수정했습니다. 총 33개의 이슈를 처리하고, 19개의 커밋(백엔드 7개 + 프론트엔드 12개 + DB 스키마 3개)을 작성했습니다.
 
 **커밋 통계:**
 - Backend: 7개 (flyingdoctor-server)
 - Frontend: 12개 (mobidoc-front)
-- **총 19개 커밋**
+- DB Schema: 3개 (mobidoc-database)
+- **총 22개 커밋**
 
 ---
 
@@ -109,6 +110,14 @@ tags: [회고, 플라잉닥터, 월간회고]
 | 02-27 | [api-patient] ConsultGroupController - 진료 관련 객체 & 로직 개편 |
 | 02-27 | [api-patient] ConsultController & ConsultGroupController - 진료 관련 객체 & 로직 개편 2 |
 | 02-27 | [api-patient] ConsultController & ConsultGroupController - 진료 관련 객체 & 로직 개편 3 |
+
+### DB Schema - mobidoc-database (3 commits)
+
+| 날짜 | 내용 |
+|------|------|
+| 02-05 | [DB] MOBIDOC DATABASE OPTIMIZE |
+| 02-05 | [20240205] MOBIDOC DATABASE SCHEMA UPDATE |
+| 02-27 | [20240227] MOBIDOC DATABASE SCHEMA UPDATE |
 
 ### Frontend (0 commits)
 
@@ -225,9 +234,10 @@ tags: [회고, 플라잉닥터, 월간회고]
 
 ### 커밋
 
-- **총 커밋 수**: 7개
-- **Backend Server**: 7개 (100%)
-- **Frontend**: 0개 (0%)
+- **총 커밋 수**: 10개
+- **Backend Server**: 7개
+- **Frontend**: 0개
+- **DB Schema (mobidoc-database)**: 3개
 
 | 도메인 | 커밋 수 |
 |--------|---------|

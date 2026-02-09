@@ -14,7 +14,8 @@ date: "2024-07-31"
 - 백엔드 커밋: 17개
 - 프론트엔드 커밋: 31개
 - 플러터 커밋: 1개
-- **총 커밋: 49개**
+- DB Schema(mobidoc-database) 커밋: 3개
+- **총 커밋: 52개**
 
 ---
 
@@ -268,6 +269,14 @@ date: "2024-07-31"
 - 진료 예약 화면 개선 (2개 커밋)
 - 프론트엔드는 기존 기능 유지
 
+### DB Schema - mobidoc-database (3 커밋)
+
+| 날짜 | 내용 |
+|------|------|
+| 07-05 | [Mobidoc] NOT USED TABLE - 20240705 |
+| 07-18 | [MOBIDOC] 20240718 UPDATE RENAME_NOT_USED_TABLE |
+| 07-19 | [MOBIDOC] 20240719 UPDATE RENAME_NOT_USED_TABLE |
+
 ### Flutter 레포지토리 (1 커밋)
 
 **환자앱 UI 개선:**
@@ -467,7 +476,8 @@ ConsultReservationService 리팩토링을 시작으로 테스트 코드를 확�
 | 백엔드 커밋 | 17개 |
 | 프론트엔드 커밋 | 31개 |
 | 플러터 커밋 | 1개 |
-| **총 커밋** | **49개** |
+| DB Schema(mobidoc-database) 커밋 | 3개 |
+| **총 커밋** | **52개** |
 
 ### 월별 비교 (2024년 1월~7월)
 
