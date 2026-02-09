@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Giscus from '../components/Giscus.astro';
+import PostToc from '../components/PostToc.astro';
+import '../styles/post.css';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => data.draft !== true);
+
+  return posts.map((post) => ({
+    params: { slug: `${post.id}.html` },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const categoryLabel = (post.data.categoryPath ?? post.id.split('/').slice(0, -1)).join(' > ') || 'Home';
+const postDate = post.data.date ? new Date(post.data.date) : new Date('1900-01-01T00:00:00.000Z');
+---
+
+<BaseLayout title={`${post.data.title} | ahngbeom`} description={post.data.summary ?? post.data.title}>
+  <div class="progress" data-progress></div>
+  <div class="article-grid">
+    <article class="article surface-card">
+      <a class="meta" href="/">Back to list</a>
+      <header class="article-header">
+        <h1>{post.data.title}</h1>
+        <p class="meta">{postDate.toISOString().slice(0, 10)} · {categoryLabel}</p>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <div class="tags">
+            {post.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+      <section class="article-content">
+        <Content />
+      </section>
+    </article>
+    <PostToc headings={headings} />
+  </div>
+  <Giscus />
+
+  <script is:inline>
+    const progress = document.querySelector('[data-progress]');
+
+    const syncProgress = () => {
+      if (!progress) return;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      const rate = total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0;
+      progress.style.width = `${rate * 100}%`;
+    };
+
+    syncProgress();
+    window.addEventListener('scroll', syncProgress, { passive: true });
+    window.addEventListener('resize', syncProgress);
+  </script>
+</BaseLayout>

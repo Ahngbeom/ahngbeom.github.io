@@ -1,0 +1,59 @@
+---
+import type { CategorySummary } from '../lib/content';
+
+interface Props {
+  categories: CategorySummary[];
+}
+
+const { categories } = Astro.props;
+---
+
+<section class="category surface-card fade-up" aria-label="Categories">
+  <h2 class="section-title">Categories</h2>
+  <ul>
+    {categories.map((category) => (
+      <li>
+        <a href={`/category/${encodeURIComponent(category.key)}/`}>
+          <span>{category.label}</span>
+          <strong>{category.count}</strong>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .category {
+    padding: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  a {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.55rem 0.7rem;
+    background: var(--surface-soft);
+    color: var(--text-muted);
+    transition: transform 140ms ease;
+  }
+
+  a:hover {
+    transform: translateY(-1px);
+  }
+
+  strong {
+    color: var(--brand);
+    font-size: 0.9rem;
+  }
+</style>

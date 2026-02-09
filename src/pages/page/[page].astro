@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
+import Pagination from '../../components/Pagination.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCategorySummaries, getPublishedPosts, paginatePosts } from '../../lib/content';
+import { siteConfig } from '../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const perPage = siteConfig.layout.postsPerPage;
+  const totalPages = Math.max(1, Math.ceil(posts.length / perPage));
+
+  return Array.from({ length: totalPages - 1 }, (_, index) => {
+    const page = index + 2;
+
+    return {
+      params: {
+        page: String(page)
+      },
+      props: {
+        page
+      }
+    };
+  });
+}
+
+const { page } = Astro.props;
+const allPosts = await getPublishedPosts();
+const categories = getCategorySummaries(allPosts);
+const pagination = paginatePosts(allPosts, page, siteConfig.layout.postsPerPage);
+---
+
+<BaseLayout title={`Page ${pagination.currentPage} | ahngbeom`}>
+  <section class="home-grid">
+    <CategoryNav categories={categories} />
+    <section class="posts">
+      <h2 class="section-title">Recent Posts</h2>
+      <p class="meta">Page {pagination.currentPage} of {pagination.totalPages}</p>
+      <div class="post-list">
+        {pagination.items.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+      <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .home-grid {
+    margin-top: 1.2rem;
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .post-list {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  @media (max-width: 980px) {
+    .home-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

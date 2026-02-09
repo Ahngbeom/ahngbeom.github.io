@@ -1,0 +1,91 @@
+---
+import type { UiPost } from '../lib/content';
+
+interface Props {
+  post: UiPost;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="card surface-card fade-up">
+  <a href={post.url} class="thumb-link" aria-label={`Read ${post.title}`}>
+    <img src={post.thumbnail} alt="thumbnail" class="thumb" loading="lazy" />
+  </a>
+  <div class="body">
+    <p class="meta">{post.dateText} · {post.categoryLabel}</p>
+    <a href={post.url}><h3>{post.title}</h3></a>
+    <p class="summary">{post.summary}</p>
+    {post.tags.length > 0 && (
+      <ul class="tags">
+        {post.tags.slice(0, 4).map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1rem;
+    padding: 0.85rem;
+  }
+
+  .thumb-link {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    aspect-ratio: 16 / 10;
+  }
+
+  .thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  h3 {
+    margin: 0.15rem 0 0;
+    font-size: 1.12rem;
+    line-height: 1.35;
+  }
+
+  .summary {
+    margin: 0.65rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .tags {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tags li {
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--text-muted);
+    padding: 0.15rem 0.5rem;
+    font-size: 0.76rem;
+  }
+
+  @media (max-width: 720px) {
+    .card {
+      grid-template-columns: 1fr;
+    }
+
+    .thumb-link {
+      aspect-ratio: 16 / 8;
+    }
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import { siteConfig } from '../config/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  subtitle?: string;
+}
+
+const { subtitle = siteConfig.description } = Astro.props;
+---
+
+<header class="hero container">
+  <div class="hero-inner surface-card fade-up">
+    <div class="identity">
+      <img src={siteConfig.profileImage} alt={siteConfig.title} loading="lazy" />
+      <div>
+        <a href="/"><h1>{siteConfig.title}</h1></a>
+        <p>{subtitle}</p>
+      </div>
+    </div>
+    <div class="controls">
+      <a href={siteConfig.links.github} target="_blank" rel="noreferrer">GitHub</a>
+      <button type="button" data-search-open>Search</button>
+      {siteConfig.theme.enableToggle && <ThemeToggle />}
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero {
+    padding-top: 1.1rem;
+  }
+
+  .hero-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(0.9rem, 2vw, 1.35rem);
+  }
+
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .identity img {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-title);
+    letter-spacing: 0.02em;
+    font-size: clamp(1.3rem, 2.5vw, 1.95rem);
+  }
+
+  p {
+    margin: 0.3rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.94rem;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .controls a,
+  .controls button {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.86rem;
+    cursor: pointer;
+  }
+
+  @media (max-width: 680px) {
+    .hero-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .controls {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+</style>
