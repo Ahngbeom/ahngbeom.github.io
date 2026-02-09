@@ -18,7 +18,7 @@ tags: [회고, 모비닥, 월간회고]
 | 항목 | 수량 |
 |------|------|
 | **Jira 이슈** | 27개 (완료 25개, 92.6%) |
-| **Git 커밋** | 58개 (Backend 40, Frontend 17, mobidoc-pdf 1) |
+| **Git 커밋** | 68개 (Backend 40, Frontend 17, mobidoc-pdf 1, DB Migration 8, DB 스키마 2) |
 | **코드 변경** | +8,825 / -3,195 라인 |
 | **작업 일수** | 20일 |
 
@@ -132,6 +132,24 @@ tags: [회고, 모비닥, 월간회고]
   - 3월에 구축한 PDF 합성 서비스의 런타임 성능 프로파일링 기능 추가
   - 메모리 사용량, CPU 프로파일, goroutine 분석 가능
 
+### mobidoc-migration(DB 마이그레이션) (8개 커밋)
+**레포지토리:**
+- mobidoc-migration: 8개
+
+**주요 작업:**
+- [MPT-7657] Korea Cast 기상 정보 테이블 (04-03)
+- Slack notification 설정 (04-03)
+- MR Template 수정 (04-04)
+- [MPT-7471] hospital_patient visit 컬럼 추가 (04-10)
+- payment.api_histories 컬럼, 환자 커플링, 진료 뷰 업데이트 (04-29 x4)
+
+### mobidoc-database(DB 스키마) (2개 커밋)
+
+| 날짜 | 커밋 메시지 |
+|------|------------|
+| 04-17 | [release-20250417] MOBIDOC DATABASE SCHEMA UPDATE |
+| 04-29 | [release-20250429] MOBIDOC DATABASE SCHEMA UPDATE |
+
 ---
 
 ## 주요 성과
@@ -204,14 +222,15 @@ API 호출 이력을 데코레이터 패턴으로 로깅하고, 카드 삭제 �
 
 ### 생산성 지표
 - **Jira 완료율**: 92.6% (25/27개)
-- **일평균 커밋**: 2.85개 (20일 작업일 기준)
+- **일평균 커밋**: 3.3개 (20일 작업일 기준)
 - **코드 기여도**: +8,825/-3,195 라인 (순증 5,630 라인)
 - **평균 파일 변경**: 6.9개/커밋
 
 ### 작업 영역 분포
-- **Backend**: 69.0% (40개 커밋)
-- **Frontend**: 29.3% (17개 커밋)
-- **mobidoc-pdf**: 1.7% (1개 커밋)
+- **Backend**: 60.6% (40개 커밋)
+- **Frontend**: 25.8% (17개 커밋)
+- **mobidoc-pdf**: 1.5% (1개 커밋)
+- **mobidoc-migration(DB)**: 12.1% (8개 커밋)
 
 ### 주요 기여 모듈
 - **weather-module**: 기상 정보 연동 (10개 커밋)

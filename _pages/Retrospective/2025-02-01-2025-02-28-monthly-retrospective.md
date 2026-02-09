@@ -7,7 +7,7 @@ date: "2025-02-28"
 
 ## 개요
 
-2025년 2월에는 **29개의 Jira 이슈**와 **35개의 커밋**(BE 31개 + FE 4개)을 처리하며 **결제 시스템 MSA 분리 완료** 및 **결제 버그 대량 수정**에 집중했습니다. 11월부터 시작된 결제 서비스 MSA 분리 작업을 2월에 최종 완료하고, 이에 따른 버그들을 집중적으로 수정하여 안정화했습니다.
+2025년 2월에는 **29개의 Jira 이슈**와 **61개의 커밋**(BE 31개 + FE 4개 + helm 1개 + DB Migration 17개 + DB 스키마 8개)을 처리하며 **결제 시스템 MSA 분리 완료** 및 **결제 버그 대량 수정**에 집중했습니다. 11월부터 시작된 결제 서비스 MSA 분리 작업을 2월에 최종 완료하고, 이에 따른 버그들을 집중적으로 수정하여 안정화했습니다.
 
 | 항목 | 수량 |
 |------|------|
@@ -15,7 +15,10 @@ date: "2025-02-28"
 | 진행 중 | 2개 |
 | Backend 커밋 | 31개 |
 | Frontend 커밋 | 4개 |
-| **총 커밋** | **35개** |
+| mobidoc-helm(인프라) 커밋 | 1개 |
+| mobidoc-migration(DB) 커밋 | 17개 |
+| mobidoc-database(DB 스키마) 커밋 | 8개 |
+| **총 커밋** | **61개** |
 
 ## 완료한 작업
 
@@ -170,7 +173,36 @@ MSA 분리 이후 발견된 결제 관련 버그를 집중적으로 수정했습
 3. **예약 실시간 갱신 (추정 1개 커밋)**
    - 예약 변경 시 실시간 갱신 구현
 
-**총 커밋: 35개 (BE 31개 + FE 4개)**
+### mobidoc-helm(인프라) (1개 커밋)
+
+Helm Chart 디렉토리 구조 재정리 작업을 수행했습니다.
+
+- 디렉토리 구조 변경에 따른 README.md 수정
+
+### mobidoc-migration(DB 마이그레이션) (17개 커밋)
+**레포지토리:**
+- mobidoc-migration: 17개
+
+**주요 작업:**
+- 운영 배포 전 마이그레이션 쿼리 정리 및 수정 (02-04 x3)
+- payment 리팩토링 마이그레이션 (02-05 x5)
+- Clean Directory Structure (02-06 x6)
+- op_time_code 디렉토리명 수정, Patient Gender, DELETE_EMPLOYEE Utils (02-06, 02-26 x2)
+
+### mobidoc-database(DB 스키마) (8개 커밋)
+
+| 날짜 | 커밋 메시지 |
+|------|------------|
+| 02-04 | DB OPTIMIZE |
+| 02-04 | NOT_USED_TABLE |
+| 02-04 | MOBIDOC DB VIEW 생성 |
+| 02-04 | [20250204] MOBIDOC DATABASE SCHEMA UPDATE |
+| 02-05 | [20250205] MOBIDOC DATABASE SCHEMA UPDATE |
+| 02-06 | [20250206] MOBIDOC DATABASE SCHEMA UPDATE |
+| 02-07 | [Spring Batch] Batch Metadata Table 추가 |
+| 02-26 | [20250226] MOBIDOC DATABASE SCHEMA UPDATE - GENDER 컬럼 추가 |
+
+**총 커밋: 61개 (BE 31개 + FE 4개 + helm 1개 + DB Migration 17개 + DB 스키마 8개)**
 
 ## 주요 성과 및 인사이트
 
@@ -259,9 +291,12 @@ Spring Rest Docs와 Swagger UI를 통합하여 API 문서 자동화를 구현했
 ### 커밋 통계
 | 항목 | 수량 | 비율 |
 |------|------|------|
-| Backend 커밋 | 31개 | 88.6% |
-| Frontend 커밋 | 4개 | 11.4% |
-| **총 커밋** | **35개** | **100%** |
+| Backend 커밋 | 31개 | 50.8% |
+| Frontend 커밋 | 4개 | 6.6% |
+| mobidoc-helm(인프라) 커밋 | 1개 | 1.6% |
+| mobidoc-migration(DB) 커밋 | 17개 | 27.9% |
+| mobidoc-database(DB 스키마) 커밋 | 8개 | 13.1% |
+| **총 커밋** | **61개** | **100%** |
 
 **레포지토리별 상세:**
 - flyingdoctor-server (stag): 0개

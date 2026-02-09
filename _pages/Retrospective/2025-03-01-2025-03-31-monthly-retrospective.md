@@ -7,7 +7,7 @@ date: "2025-03-31"
 
 ## 개요
 
-2025년 3월에는 **30개의 Jira 이슈**와 **40개의 커밋**(BE 17개 + FE 1개 + mobidoc-pdf 22개)을 처리하며 **가예약 시스템 고도화**, **통계 데이터 인프라 구축**, **PDF 합성 서비스 신규 개발**에 집중했습니다. 가예약 QR 접수 기능을 신규 개발하고, 병원 통계 테이블을 생성하여 데이터 기반 의사결정 기반을 마련했으며, Go 기반의 mobidoc-pdf 서비스를 처음부터 구축하여 처방전 합성 기능의 기반을 마련했습니다.
+2025년 3월에는 **30개의 Jira 이슈**와 **71개의 커밋**(BE 17개 + FE 1개 + mobidoc-pdf 22개 + kube 7개 + DB Migration 20개 + DB 스키마 4개)을 처리하며 **가예약 시스템 고도화**, **통계 데이터 인프라 구축**, **PDF 합성 서비스 신규 개발 및 Knative 배포**에 집중했습니다. 가예약 QR 접수 기능을 신규 개발하고, 병원 통계 테이블을 생성하여 데이터 기반 의사결정 기반을 마련했으며, Go 기반의 mobidoc-pdf 서비스를 처음부터 구축하고 Knative를 통해 프로덕션 환경에 배포하여 처방전 합성 기능의 기반을 마련했습니다.
 
 | 항목 | 수량 |
 |------|------|
@@ -16,7 +16,10 @@ date: "2025-03-31"
 | Backend 커밋 | 17개 |
 | Frontend 커밋 | 1개 |
 | mobidoc-pdf 커밋 | 22개 |
-| **총 커밋** | **40개** |
+| kube(인프라) 커밋 | 7개 |
+| mobidoc-migration(DB) 커밋 | 20개 |
+| mobidoc-database(DB 스키마) 커밋 | 4개 |
+| **총 커밋** | **71개** |
 
 ## 완료한 작업
 
@@ -223,7 +226,42 @@ date: "2025-03-31"
 - [mobidoc-pdf][fix] optimize memory heap - 메모리 힙 최적화
 - [mobidoc-pdf][fix] Resize the PNG file to fit the PDF dimensions - PNG→PDF 크기 맞춤
 
-**총 커밋: 40개 (BE 17개 + FE 1개 + mobidoc-pdf 22개)**
+### kube(인프라) (7개 커밋) - Knative mobidoc-pdf 배포
+**레포지토리:**
+- infra/kube (master): 7개
+
+**작업 내용:**
+mobidoc-pdf 서비스 개발(22개 커밋)과 연동하여 Knative 기반으로 프로덕션 환경에 배포하는 작업을 수행했습니다. 총 7회에 걸쳐 mobidoc-pdf 버전을 업데이트하며 점진적으로 배포했습니다.
+
+| 날짜 | 커밋 메시지 | 변경 파일 |
+|------|-----------|----------|
+| 03-21 | [knative] Update mobidoc-pdf version | knative/yaml/mobidoc-pdf.yaml |
+| 03-24 | [knative] Update mobidoc-pdf version | knative/yaml/mobidoc-pdf.yaml |
+| 03-25 | [knative] Update mobidoc-pdf version (x4) | knative/yaml/mobidoc-pdf.yaml |
+| 03-28 | [knative] Update mobidoc-pdf version | knative/yaml/mobidoc-pdf.yaml |
+
+**연관 작업:** mobidoc-pdf 안정화(03-20~03-25) 및 성능 최적화(03-25~03-28) 단계에서 코드 변경 후 즉시 Knative 배포를 통해 프로덕션에 반영
+
+### mobidoc-migration(DB 마이그레이션) (20개 커밋)
+**레포지토리:**
+- mobidoc-migration: 20개
+
+**주요 작업:**
+- 기상 관측소 데이터 (03-18)
+- Migration Queries 추가, INDEX 최적화, Utils, RELEASE 업데이트 (03-20 x6)
+- Add Merge Request Template (03-21 x12)
+- Arrange Directories (03-21)
+
+### mobidoc-database(DB 스키마) (4개 커밋)
+
+| 날짜 | 커밋 메시지 |
+|------|------------|
+| 03-18 | 기상 관측소 데이터 |
+| 03-20 | [20250320] MOBIDOC DATABASE SCHEMA UPDATE |
+| 03-21 | Arrange Directories |
+| 03-21 | Arrange Directories |
+
+**총 커밋: 71개 (BE 17개 + FE 1개 + mobidoc-pdf 22개 + kube 7개 + DB Migration 20개 + DB 스키마 4개)**
 
 ## 주요 성과 및 인사이트
 
@@ -281,12 +319,13 @@ Go 기반의 PDF 합성 서비스(mobidoc-file 저장소)를 새롭게 구축했
 
 **기술 스택:** Go, Docker, PDF/PNG 합성, 임시 파일 관리
 
-### 6. 백엔드 중심 개발 극대화
-커밋 비율이 BE+mobidoc-pdf 97.5%, FE 2.5%:
+### 6. 백엔드 및 인프라 중심 개발 극대화
+커밋 비율이 BE+mobidoc-pdf+kube 97.9%, FE 2.1%:
 - DB 작업 12개로 인프라 개선 집중
 - 가예약 QR 접수 신규 개발
 - 통계 테이블 구축
 - mobidoc-pdf 서비스 신규 개발
+- Knative 기반 mobidoc-pdf 배포 (7회)
 
 ### 6. 완료율 유지
 30개 이슈 중 27개 완료 (90.0%)로 높은 완료율 유지.
@@ -322,10 +361,13 @@ Go 기반의 PDF 합성 서비스(mobidoc-file 저장소)를 새롭게 구축했
 ### 커밋 통계
 | 항목 | 수량 | 비율 |
 |------|------|------|
-| Backend 커밋 | 17개 | 42.5% |
-| Frontend 커밋 | 1개 | 2.5% |
-| mobidoc-pdf 커밋 | 22개 | 55.0% |
-| **총 커밋** | **40개** | **100%** |
+| Backend 커밋 | 17개 | 23.9% |
+| Frontend 커밋 | 1개 | 1.4% |
+| mobidoc-pdf 커밋 | 22개 | 31.0% |
+| kube(인프라) 커밋 | 7개 | 9.9% |
+| mobidoc-migration(DB) 커밋 | 20개 | 28.2% |
+| mobidoc-database(DB 스키마) 커밋 | 4개 | 5.6% |
+| **총 커밋** | **71개** | **100%** |
 
 **레포지토리별 상세:**
 - flyingdoctor-server (stag): 0개
@@ -333,6 +375,7 @@ Go 기반의 PDF 합성 서비스(mobidoc-file 저장소)를 새롭게 구축했
 - flyingdoctor-front (develop): 0개
 - mobidoc-front (develop): 1개
 - mobidoc-file (main): 22개
+- infra/kube (master): 7개
 
 ### 작업 분포
 | 카테고리 | 이슈/커밋 수 |
@@ -342,6 +385,7 @@ Go 기반의 PDF 합성 서비스(mobidoc-file 저장소)를 새롭게 구축했
 | 통계 데이터 인프라 | 4개 이슈 |
 | 통합 시스템 | 4개 이슈 |
 | **mobidoc-pdf 신규 개발** | **22개 커밋** |
+| **kube Knative 배포** | **7개 커밋** |
 | DB 성능 최적화 (모니터링) | 2개 이슈 |
 | 환자 앱 | 2개 이슈 |
 | 결제 시스템 | 1개 이슈 |
@@ -371,12 +415,12 @@ Go 기반의 PDF 합성 서비스(mobidoc-file 저장소)를 새롭게 구축했
 
 ### 개선이 필요한 점 🔧
 1. **프론트엔드 작업 극소화**:
-   - FE 커밋 5.6%로 역대 최저
-   - BE 중심 개발 과도
+   - FE 커밋 2.1%로 역대 최저
+   - BE 및 인프라 중심 개발 과도
 
 2. **서버 커밋 수 감소 (mobidoc-pdf 별도)**:
-   - 서버+FE 18개 커밋은 2월(35개) 대비 감소하나, mobidoc-pdf 22개 포함 시 총 40개
-   - mobidoc-pdf 신규 프로젝트에 상당 리소스 투입
+   - 서버+FE 18개 커밋은 2월(35개) 대비 감소하나, mobidoc-pdf 22개 + kube 7개 포함 시 총 47개
+   - mobidoc-pdf 신규 프로젝트 및 Knative 배포 인프라에 상당 리소스 투입
 
 3. **DB 성능 최적화 미완료**:
    - CRM 검색 쿼리 개선 모니터링 단계
