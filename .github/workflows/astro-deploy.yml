@@ -1,12 +1,15 @@
 name: Astro Deploy to GitHub Pages
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       ref:
         description: 'Git ref to deploy (branch, tag, or commit SHA)'
         required: true
-        default: 'blog-architecture-review'
+        default: 'master'
         type: string
 
 permissions:
@@ -23,10 +26,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve deploy ref
+        id: resolve_ref
+        run: echo "value=${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}" >> $GITHUB_OUTPUT
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ steps.resolve_ref.outputs.value }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -69,6 +76,6 @@ jobs:
         run: |
           echo "## Astro Deploy Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Ref: ${{ inputs.ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
           echo "- SHA: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
