@@ -225,6 +225,9 @@ class RetrospectiveGenerator:
 
     def generate_markdown(self, start_date, end_date, categories: dict) -> str:
         """마크다운 회고록 생성"""
+        filename = f"{start_date.strftime('%Y-%m-%d')}-{end_date.strftime('%Y-%m-%d')}-weekly-retrospective"
+        permalink = f"/Retrospective/{filename}.html"
+
         all_issues = categories.get("all", [])
         completed = categories.get("by_status_completed", [])
         monitoring = categories.get("by_status_monitoring", [])
@@ -243,6 +246,7 @@ class RetrospectiveGenerator:
         md = f"""---
 title: "주간 회고록 ({start_date.strftime('%Y.%m.%d')} ~ {end_date.strftime('%Y.%m.%d')})"
 date: "{end_date.strftime('%Y-%m-%d')}"
+permalink: "{permalink}"
 tags: [회고, 모비닥, 주간회고]
 ---
 
@@ -334,7 +338,8 @@ _다음 주 계획을 작성해주세요._
     def save(self, start_date, end_date, content: str) -> str:
         """회고록 파일 저장"""
         filename = f"{start_date.strftime('%Y-%m-%d')}-{end_date.strftime('%Y-%m-%d')}-weekly-retrospective.md"
-        filepath = self.output_dir / filename
+        year_dir = self.output_dir / start_date.strftime("%Y") / "weekly"
+        filepath = year_dir / filename
 
         # 이미 존재하면 스킵
         if filepath.exists():
@@ -342,7 +347,7 @@ _다음 주 계획을 작성해주세요._
             return str(filepath)
 
         # 디렉토리 생성
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        year_dir.mkdir(parents=True, exist_ok=True)
 
         # 파일 저장
         filepath.write_text(content, encoding="utf-8")
