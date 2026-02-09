@@ -1,0 +1,95 @@
+---
+import { siteConfig } from '../config/site';
+import SiteHeader from '../components/SiteHeader.astro';
+import SearchModal from '../components/SearchModal.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  subtitle?: string;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  subtitle = siteConfig.description
+} = Astro.props;
+const { analytics } = siteConfig;
+---
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {analytics.googleAnalytics && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${analytics.googleAnalytics}`}></script>
+        <script is:inline define:vars={{ gaId: analytics.googleAnalytics }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (systemDark ? 'dark' : 'light');
+        root.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <SiteHeader subtitle={subtitle} />
+      <main class="site-main container">
+        <slot />
+      </main>
+      <footer class="container footer">
+        <p>
+          © {new Date().getFullYear()} {siteConfig.title}
+          · <a href={siteConfig.links.github} target="_blank" rel="noreferrer">GitHub</a>
+        </p>
+      </footer>
+    </div>
+    <SearchModal />
+    <script is:inline>
+      const toggle = document.querySelector('[data-theme-toggle]');
+      toggle?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('theme', next);
+      });
+    </script>
+    {analytics.goatcounterCode && (
+      <script
+        data-goatcounter={`https://${analytics.goatcounterCode}.goatcounter.com/count`}
+        async
+        src="//gc.zgo.at/count.js"
+      ></script>
+    )}
+  </body>
+</html>
+
+<style>
+  .footer {
+    padding-bottom: 2.2rem;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+  }
+
+  .footer p {
+    margin: 0;
+  }
+
+  .footer a {
+    color: var(--brand);
+  }
+</style>

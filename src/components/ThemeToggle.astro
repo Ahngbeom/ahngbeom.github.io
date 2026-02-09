@@ -1,0 +1,36 @@
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">
+  <span class="icon sun" aria-hidden="true">☼</span>
+  <span class="icon moon" aria-hidden="true">☾</span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .icon {
+    line-height: 1;
+    font-size: 1rem;
+  }
+
+  .moon {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .sun {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .moon {
+    display: inline;
+  }
+</style>

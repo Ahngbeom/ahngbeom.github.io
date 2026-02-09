@@ -1,0 +1,212 @@
+<div class="search-overlay" data-search-overlay hidden>
+  <div class="search-box surface-card" role="dialog" aria-modal="true" aria-label="Search posts">
+    <input type="search" data-search-input placeholder="Search by title, tags, category" autocomplete="off" />
+    <ul data-search-results></ul>
+  </div>
+</div>
+
+<script>
+  const overlay = document.querySelector('[data-search-overlay]');
+  const input = overlay?.querySelector('[data-search-input]');
+  const results = overlay?.querySelector('[data-search-results]');
+  const openButtons = document.querySelectorAll('[data-search-open]');
+
+  let records = [];
+  let pointer = -1;
+  let timerId;
+  let isLoading = false;
+
+  async function ensureRecords() {
+    if (records.length > 0 || isLoading) {
+      return;
+    }
+
+    isLoading = true;
+    try {
+      const response = await fetch('/search-index.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load search index: ${response.status}`);
+      }
+      records = await response.json();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function closeModal() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    pointer = -1;
+    if (input) {
+      input.value = '';
+    }
+    if (results) {
+      results.innerHTML = '';
+    }
+  }
+
+  function openModal() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    input?.focus();
+    ensureRecords().catch(() => {});
+  }
+
+  function render(items) {
+    if (!results) return;
+
+    results.innerHTML = '';
+
+    if (items.length === 0) {
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${item.url}" data-index="${index}"><strong>${item.title}</strong><span>${item.date} · ${item.categoryPath.join(' > ') || 'Home'}</span></a>`;
+      results.appendChild(li);
+    });
+  }
+
+  function renderMessage(message) {
+    if (!results) return;
+    results.innerHTML = `<li><span>${message}</span></li>`;
+  }
+
+  function search(keyword) {
+    const normalized = keyword.toLowerCase().trim();
+    if (!normalized) {
+      render([]);
+      return;
+    }
+
+    const matched = records
+      .filter((item) => {
+        const haystack = `${item.title} ${item.tags.join(' ')} ${item.categoryPath.join(' ')} ${item.summary}`.toLowerCase();
+        return haystack.includes(normalized);
+      })
+      .slice(0, 20);
+
+    if (matched.length === 0) {
+      renderMessage('No results found.');
+      pointer = -1;
+      return;
+    }
+
+    render(matched);
+    pointer = -1;
+  }
+
+  openButtons.forEach((button) => {
+    button.addEventListener('click', openModal);
+  });
+
+  overlay?.addEventListener('click', (event) => {
+    if (event.target === overlay) {
+      closeModal();
+    }
+  });
+
+  input?.addEventListener('input', () => {
+    clearTimeout(timerId);
+    timerId = setTimeout(async () => {
+      try {
+        await ensureRecords();
+      } catch (error) {
+        renderMessage('Search index load failed.');
+        return;
+      }
+      search(input.value);
+    }, 120);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === '/' && overlay?.hidden) {
+      event.preventDefault();
+      openModal();
+      return;
+    }
+
+    if (event.key === 'Escape' && !overlay?.hidden) {
+      closeModal();
+      return;
+    }
+
+    if (!overlay || overlay.hidden || !results) {
+      return;
+    }
+
+    const links = Array.from(results.querySelectorAll('a'));
+    if (links.length === 0) {
+      return;
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      pointer = (pointer + 1) % links.length;
+      links[pointer].focus();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      pointer = (pointer - 1 + links.length) % links.length;
+      links[pointer].focus();
+    }
+  });
+
+  // Preload search index so first query responds immediately.
+  ensureRecords().catch(() => {});
+</script>
+
+<style>
+  .search-overlay[hidden] {
+    display: none;
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 45%, #000 55%);
+    display: grid;
+    place-items: flex-start center;
+    padding-top: 8vh;
+  }
+
+  .search-box {
+    width: min(100% - 1rem, 760px);
+    padding: 0.85rem;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.75rem;
+    font-size: 0.98rem;
+  }
+
+  ul {
+    margin: 0.7rem 0 0;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+    max-height: 60vh;
+    overflow: auto;
+  }
+
+  li a {
+    display: grid;
+    gap: 0.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-soft);
+    padding: 0.55rem 0.65rem;
+  }
+
+  li span {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+</style>

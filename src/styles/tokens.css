@@ -1,0 +1,45 @@
+:root {
+  color-scheme: light;
+  --font-title: 'Righteous', 'Nunito Sans', sans-serif;
+  --font-body: 'Nunito Sans', 'Lato', sans-serif;
+
+  --bg: #f4f7fc;
+  --bg-accent: #dce6ff;
+  --surface: #ffffff;
+  --surface-soft: #f6f9ff;
+  --text: #1a2738;
+  --text-muted: #5f6f86;
+  --line: #d8e2f0;
+  --brand: #0f4ec6;
+  --brand-soft: #e6eeff;
+  --shadow: 0 8px 24px rgba(24, 45, 79, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --content-width: 1180px;
+  --content-narrow: 820px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #101622;
+  --bg-accent: #1b2840;
+  --surface: #171f2d;
+  --surface-soft: #1c273a;
+  --text: #e7eefb;
+  --text-muted: #a3b2cb;
+  --line: #2b3a56;
+  --brand: #7aa9ff;
+  --brand-soft: #24385f;
+  --shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+}
