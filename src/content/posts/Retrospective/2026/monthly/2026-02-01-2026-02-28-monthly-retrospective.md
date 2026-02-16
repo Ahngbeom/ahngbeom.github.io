@@ -3,6 +3,7 @@ title: "월간 회고록 (2026.02.01 ~ 2026.02.28)"
 date: "2026-02-28"
 tags: [회고, 모비닥, 월간회고]
 permalink: /Retrospective/2026-02-01-2026-02-28-monthly-retrospective.html
+legacy_url: /Retrospective/2026/monthly/2026-02-01-2026-02-28-monthly-retrospective.html
 ---
 
 ## 개요
