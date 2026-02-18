@@ -43,11 +43,19 @@ src/content/posts/
 └── Retrospective/
     └── {연도}/{annual|monthly|weekly}/
         └── {날짜범위}-{타입}-retrospective.md
+            # 주간: 2026-02-10-2026-02-16-weekly-retrospective.md
+            # 월간: 2026-02-monthly-retrospective.md
+            # 연간: 2025-annual-retrospective.md
 ```
 
 ### 카테고리 추론 방식
 
 카테고리는 파일 경로에서 자동 추론됩니다 (`src/lib/content.ts`의 `toCategoryPath`). front matter에 `categoryPath`가 명시되지 않으면, 파일 ID의 디렉토리 세그먼트가 카테고리 경로로 사용됩니다.
+
+**루트 포스트 처리**: `src/content/posts/Introduction.md`처럼 서브디렉토리 없이 루트에 위치한 파일은:
+- `categoryPath: []` (빈 배열)
+- `categoryLabel: 'Uncategorized'` (상수: `UNCATEGORIZED_CATEGORY`)
+- `/category/Uncategorized/` 경로로 라우팅됨
 
 ### Front Matter 스키마 (`src/content/config.ts`)
 
@@ -80,7 +88,7 @@ legacy_url: "/old/path"     # Jekyll 시절 URL 호환용
 | 파일 | 역할 |
 |------|------|
 | `astro.config.mjs` | Astro 설정 (static 출력, trailingSlash: ignore) |
-| `src/config/site.ts` | 사이트 메타, 외부 서비스 키, 테마/레이아웃 설정 |
+| `src/config/site.ts` | 사이트 메타, 외부 서비스 키, 테마/레이아웃 설정 (`layout.postsPerPage: 12` 포함) |
 | `src/content/config.ts` | Astro Content Collections 스키마 정의 |
 | `src/lib/content.ts` | **핵심**: `UiPost` 인터페이스 정의, 포스트 정규화, 카테고리 추론, 페이지네이션 유틸리티 |
 | `src/types/search.ts` | 클라이언트 검색 인덱스 타입 |
@@ -128,7 +136,7 @@ interface UiPost {
 | `PostCard.astro` | 포스트 카드 (목록 페이지용) |
 | `PostToc.astro` | 포스트 목차 (Table of Contents) |
 | `Pagination.astro` | 페이지네이션 UI |
-| `SearchModal.astro` | 클라이언트 사이드 검색 모달 |
+| `SearchModal.astro` | 클라이언트 사이드 검색 모달 (`/` 키 단축키로 열기) |
 | `Giscus.astro` | GitHub Discussions 댓글 위젯 |
 | `ThemeToggle.astro` | 다크/라이트 테마 토글 |
 
