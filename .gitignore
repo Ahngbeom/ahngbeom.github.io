@@ -1,13 +1,3 @@
-# Jekyll
-_site/
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-.bundle
-*.gem
-Gemfile.lock
-vendor
-
 # Logs
 *.log
 
@@ -18,3 +8,6 @@ vendor
 node_modules/
 dist/
 .astro/
+
+# Ruby/Jekyll artifacts (untracked legacy)
+vendor/
