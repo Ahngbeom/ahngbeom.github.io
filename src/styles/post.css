@@ -1,4 +1,5 @@
 .article {
+  min-width: 0;
   width: min(100%, var(--content-narrow));
   margin: 1rem auto 0;
   padding: clamp(1rem, 2vw, 1.75rem);
@@ -71,7 +72,39 @@
 
 @media (max-width: 1180px) {
   .article-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     width: min(100%, var(--content-narrow));
+  }
+}
+
+.article-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.article-content th,
+.article-content td {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  min-width: 7rem;
+}
+
+.article-content img {
+  height: auto;
+}
+
+.article-content :is(pre, table) {
+  overscroll-behavior-x: contain;
+}
+
+.article-content :is(h2, h3) {
+  scroll-margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .article-content :is(ul, ol) {
+    padding-left: 1.4rem;
   }
 }

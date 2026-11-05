@@ -52,8 +52,32 @@ const { categories } = Astro.props;
     transform: translateY(-1px);
   }
 
+  span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   strong {
+    flex-shrink: 0;
     color: var(--brand);
     font-size: 0.9rem;
+  }
+  @media (max-width: 980px) {
+    ul {
+      display: flex;
+      overflow-x: auto;
+      padding: 0.2rem 0.2rem 0.5rem;
+      scroll-snap-type: x proximity;
+    }
+
+    li {
+      flex: 0 0 auto;
+      max-width: 100%;
+      scroll-snap-align: start;
+    }
+
+    a {
+      min-height: 44px;
+    }
   }
 </style>
