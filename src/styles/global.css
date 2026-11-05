@@ -101,3 +101,42 @@ img {
     width: min(100% - 1.25rem, var(--content-width));
   }
 }
+
+/* Shared archive layout: sidebar on wide screens, compact categories above posts on smaller screens. */
+.home-grid {
+  margin-top: 1.2rem;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.posts,
+.home-grid > * {
+  min-width: 0;
+}
+
+.posts .meta {
+  margin: 0.35rem 0 0;
+}
+
+h1, h2, h3, .meta, .tags, .summary {
+  overflow-wrap: anywhere;
+}
+
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .home-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none;
+  }
+}

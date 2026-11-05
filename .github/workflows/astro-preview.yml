@@ -37,6 +37,20 @@ jobs:
           test -f dist/index.html
           test -f dist/search-index.json
 
+      - name: Install browser for responsive checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Check responsive layouts and interactions
+        run: npm run test:responsive
+
+      - name: Upload responsive evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: responsive-evidence
+          path: docs/responsive
+          if-no-files-found: error
+
       - name: Upload preview artifact
         uses: actions/upload-artifact@v4
         with:
