@@ -1,0 +1,216 @@
+{
+  "browser": "154.0.8037.57",
+  "representativeViewports": [
+    [
+      320,
+      740
+    ],
+    [
+      375,
+      812
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      600,
+      900
+    ],
+    [
+      601,
+      900
+    ],
+    [
+      680,
+      900
+    ],
+    [
+      681,
+      900
+    ],
+    [
+      768,
+      1024
+    ],
+    [
+      980,
+      900
+    ],
+    [
+      981,
+      900
+    ],
+    [
+      1024,
+      768
+    ],
+    [
+      1180,
+      900
+    ],
+    [
+      1181,
+      900
+    ],
+    [
+      1440,
+      900
+    ],
+    [
+      1920,
+      1080
+    ]
+  ],
+  "representativeRoutes": [
+    "/",
+    "/page/2/",
+    "/category/Retrospective/",
+    "/category/Retrospective/page/2/",
+    "/DBA/MySQL%20Version%20Up.md.html/",
+    "/Full-Stack/Legacy%20API%20%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81.md.html/"
+  ],
+  "generatedRoutes": 101,
+  "routeChecks": 292,
+  "uncaughtErrors": [],
+  "measurements": [
+    {
+      "width": 320,
+      "height": 740,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "300px",
+      "cardColumns": "270.812px"
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "355px",
+      "cardColumns": "325.812px"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "370px",
+      "cardColumns": "340.812px"
+    },
+    {
+      "width": 600,
+      "height": 900,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "580px",
+      "cardColumns": "550.812px"
+    },
+    {
+      "width": 601,
+      "height": 900,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "581px",
+      "cardColumns": "180px 355.812px"
+    },
+    {
+      "width": 680,
+      "height": 900,
+      "categoryHeight": 138.5625,
+      "postsTop": 346.046875,
+      "columns": "660px",
+      "cardColumns": "180px 434.812px"
+    },
+    {
+      "width": 681,
+      "height": 900,
+      "categoryHeight": 138.5625,
+      "postsTop": 286.046875,
+      "columns": "661px",
+      "cardColumns": "180px 435.812px"
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "categoryHeight": 138.5625,
+      "postsTop": 287.984375,
+      "columns": "748px",
+      "cardColumns": "180px 522.812px"
+    },
+    {
+      "width": 980,
+      "height": 900,
+      "categoryHeight": 144.359375,
+      "postsTop": 308.359375,
+      "columns": "948px",
+      "cardColumns": "180px 722.812px"
+    },
+    {
+      "width": 981,
+      "height": 900,
+      "categoryHeight": 505.421875,
+      "postsTop": 148.078125,
+      "columns": "250px 683px",
+      "cardColumns": "180px 457.812px"
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "categoryHeight": 507.125,
+      "postsTop": 151.546875,
+      "columns": "250px 726px",
+      "cardColumns": "180px 500.812px"
+    },
+    {
+      "width": 1180,
+      "height": 900,
+      "categoryHeight": 511.453125,
+      "postsTop": 160.25,
+      "columns": "250px 882px",
+      "cardColumns": "180px 656.812px"
+    },
+    {
+      "width": 1181,
+      "height": 900,
+      "categoryHeight": 511.453125,
+      "postsTop": 160.296875,
+      "columns": "250px 883px",
+      "cardColumns": "180px 657.812px"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "categoryHeight": 511.453125,
+      "postsTop": 163.0625,
+      "columns": "250px 914px",
+      "cardColumns": "180px 688.812px"
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "categoryHeight": 511.453125,
+      "postsTop": 163.0625,
+      "columns": "250px 914px",
+      "cardColumns": "180px 688.812px"
+    }
+  ],
+  "passed": [
+    "document overflow",
+    "compact categories",
+    "44px primary controls",
+    "TOC layout and anchors",
+    "search results and viewport containment",
+    "Tab/Shift+Tab and focus restore",
+    "Escape and shortcut",
+    "theme persistence",
+    "pagination/category links",
+    "long title/code/table stress",
+    "short landscape search",
+    "200% equivalent reflow"
+  ],
+  "limitations": [
+    "Chromium only; no physical iOS/Android or virtual keyboard.",
+    "External requests (analytics, avatar, giscus and remote article assets) blocked to isolate local layout."
+  ]
+}

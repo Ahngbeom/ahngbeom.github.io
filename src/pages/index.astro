@@ -28,31 +28,9 @@ const pagination = paginatePosts(allPosts, 1, siteConfig.layout.postsPerPage);
 </BaseLayout>
 
 <style>
-  .home-grid {
-    margin-top: 1.2rem;
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .posts {
-    min-width: 0;
-  }
-
-  .posts .meta {
-    margin: 0.35rem 0 0;
-  }
-
   .post-list {
     margin-top: 1rem;
     display: grid;
     gap: 0.8rem;
-  }
-
-  @media (max-width: 980px) {
-    .home-grid {
-      grid-template-columns: 1fr;
-    }
   }
 </style>

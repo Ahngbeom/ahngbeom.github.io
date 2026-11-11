@@ -29,9 +29,13 @@ const { post } = Astro.props;
 <style>
   .card {
     display: grid;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 180px minmax(0, 1fr);
     gap: 1rem;
     padding: 0.85rem;
+  }
+
+  .body {
+    min-width: 0;
   }
 
   .thumb-link {
@@ -79,7 +83,7 @@ const { post } = Astro.props;
     font-size: 0.76rem;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 600px) {
     .card {
       grid-template-columns: 1fr;
     }

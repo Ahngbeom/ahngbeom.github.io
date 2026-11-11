@@ -21,7 +21,7 @@ Astro + TypeScript 기반 개인 기술 블로그 저장소입니다.
 ## 빠른 시작
 
 ### 요구사항
-- Node.js `>= 18.20.8` (권장: Node 20)
+- Node.js `>= 20` (반응형 브라우저 검증 도구 포함)
 
 ### 설치
 ```bash
@@ -42,6 +42,16 @@ npm run build
 ```bash
 npm run preview
 ```
+
+### 반응형 검증
+```bash
+npx playwright install chromium
+npm run build
+npm run test:responsive
+```
+
+검사 스크립트가 preview 서버를 실행하고, 화면별 결과와 스크린샷을 생성합니다.
+[개선 계획](docs/responsive/plan.md)과 [검증 결과](docs/responsive/report.md)를 참고하세요.
 
 ## 콘텐츠 관리
 

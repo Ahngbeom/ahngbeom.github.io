@@ -1,6 +1,7 @@
 <div class="search-overlay" data-search-overlay hidden>
   <div class="search-box surface-card" role="dialog" aria-modal="true" aria-label="Search posts">
-    <input type="search" data-search-input placeholder="Search by title, tags, category" autocomplete="off" />
+    <button class="search-close" type="button" data-search-close aria-label="Close search">Close ✕</button>
+    <input aria-label="Search posts" type="search" data-search-input placeholder="Search by title, tags, category" autocomplete="off" />
     <ul data-search-results></ul>
   </div>
 </div>
@@ -11,6 +12,7 @@
   const results = overlay?.querySelector('[data-search-results]');
   const openButtons = document.querySelectorAll('[data-search-open]');
 
+  let returnFocus;
   let records = [];
   let pointer = -1;
   let timerId;
@@ -36,6 +38,8 @@
   function closeModal() {
     if (!overlay) return;
     overlay.hidden = true;
+    document.body.style.overflow = '';
+    returnFocus?.focus();
     pointer = -1;
     if (input) {
       input.value = '';
@@ -47,7 +51,9 @@
 
   function openModal() {
     if (!overlay) return;
+    returnFocus = document.activeElement;
     overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
     input?.focus();
     ensureRecords().catch(() => {});
   }
@@ -97,6 +103,8 @@
     pointer = -1;
   }
 
+  overlay?.querySelector('[data-search-close]')?.addEventListener('click', closeModal);
+
   openButtons.forEach((button) => {
     button.addEventListener('click', openModal);
   });
@@ -121,7 +129,8 @@
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === '/' && overlay?.hidden) {
+    const editing = event.target instanceof HTMLElement && (event.target.matches('input, textarea, select') || event.target.isContentEditable);
+    if (event.key === '/' && overlay?.hidden && !editing) {
       event.preventDefault();
       openModal();
       return;
@@ -134,6 +143,19 @@
 
     if (!overlay || overlay.hidden || !results) {
       return;
+    }
+
+    if (event.key === 'Tab') {
+      const focusable = Array.from(overlay.querySelectorAll('button, input, a'));
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
     }
 
     const links = Array.from(results.querySelectorAll('a'));
@@ -168,11 +190,16 @@
     background: color-mix(in srgb, var(--bg) 45%, #000 55%);
     display: grid;
     place-items: flex-start center;
-    padding-top: 8vh;
+    padding: clamp(0.5rem, 8dvh, 4rem) 0.5rem 0.5rem;
+    overflow: auto;
   }
 
   .search-box {
-    width: min(100% - 1rem, 760px);
+    width: min(100%, 760px);
+    max-height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     padding: 0.85rem;
   }
 
@@ -183,7 +210,9 @@
     color: var(--text);
     border-radius: var(--radius-sm);
     padding: 0.7rem 0.75rem;
-    font-size: 0.98rem;
+    font-size: 1rem;
+    min-height: 44px;
+    flex-shrink: 0;
   }
 
   ul {
@@ -192,12 +221,16 @@
     padding: 0;
     display: grid;
     gap: 0.4rem;
-    max-height: 60vh;
+    min-height: 0;
+    overscroll-behavior: contain;
+    max-height: 60dvh;
     overflow: auto;
   }
 
-  li a {
+  ul :global(li a) {
     display: grid;
+    overflow-wrap: anywhere;
+    min-height: 44px;
     gap: 0.2rem;
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
@@ -205,8 +238,20 @@
     padding: 0.55rem 0.65rem;
   }
 
-  li span {
+  ul :global(li span) {
     font-size: 0.82rem;
     color: var(--text-muted);
+  }
+  .search-close {
+    align-self: flex-end;
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-soft);
+    color: var(--text);
+    cursor: pointer;
   }
 </style>

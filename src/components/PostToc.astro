@@ -15,14 +15,16 @@ const items = headings.filter((heading) => heading.depth >= 2 && heading.depth <
 
 {items.length > 0 && (
   <aside class="toc surface-card">
-    <h2>Contents</h2>
-    <ul>
-      {items.map((heading) => (
-        <li class={`depth-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
-    </ul>
+    <details open>
+      <summary>Contents</summary>
+      <ul>
+        {items.map((heading) => (
+          <li class={`depth-${heading.depth}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
   </aside>
 )}
 
@@ -35,10 +37,28 @@ const items = headings.filter((heading) => heading.depth >= 2 && heading.depth <
     overflow: auto;
   }
 
-  h2 {
+  summary {
+    cursor: pointer;
+    list-style: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
     margin: 0;
     font-size: 0.95rem;
     color: var(--text-muted);
+  }
+
+  summary::after {
+    content: '▸';
+    margin-left: auto;
+  }
+
+  details[open] summary::after {
+    content: '▾';
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
   }
 
   ul {
@@ -60,9 +80,34 @@ const items = headings.filter((heading) => heading.depth >= 2 && heading.depth <
 
   a {
     color: var(--text-muted);
+    display: block;
+    padding: 0.45rem 0;
+    overflow-wrap: anywhere;
   }
 
   a:hover {
     color: var(--brand);
   }
+  @media (max-width: 1180px) {
+    .toc {
+      grid-row: 1;
+      position: static;
+      max-height: none;
+    }
+
+    ul {
+      max-height: 40dvh;
+      overflow-y: auto;
+    }
+  }
 </style>
+
+<script>
+  const toc = document.querySelector('.toc details');
+  if (toc instanceof HTMLDetailsElement) {
+    const desktop = window.matchMedia('(min-width: 1181px)');
+    const syncToc = () => { toc.open = desktop.matches; };
+    syncToc();
+    desktop.addEventListener('change', syncToc);
+  }
+</script>
